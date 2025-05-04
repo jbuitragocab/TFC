@@ -17,10 +17,19 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-    protected $fillable = [
-        'name',
-        'email',
+
+     protected $primaryKey = 'id_usuario';
+     public $incrementing = true;
+     protected $keyType = 'int';
+    
+     protected $fillable = [
+        'nombre',
+        'apellidos',
+        'correo',
         'password',
+        'fecha_registro',
+        'cuenta_bancaria',
+        'admin'
     ];
 
     /**
@@ -44,5 +53,15 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function reservas()
+    {
+        return $this->hasMany(Reserva::class);
+    }
+
+    public function opiniones()
+    {
+        return $this->hasMany(Opinion::class);
     }
 }

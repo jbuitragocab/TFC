@@ -12,7 +12,7 @@
     }
 
     .login-section {
-      background: url('{{ asset('res.jpg') }}') center center/cover no-repeat;
+      background: url('{{ asset('/img/res.jpg') }}') center center/cover no-repeat;
       height: 100vh;
       display: flex;
       align-items: center;

@@ -12,7 +12,7 @@
     }
 
     .login-section {
-      background: url('{{ asset('res.jpg') }}') center center/cover no-repeat;
+      background: url('{{ asset('/img/res.jpg') }}') center center/cover no-repeat;
       height: 100vh;
       display: flex;
       align-items: center;
@@ -100,11 +100,11 @@
     <input type="email" class="form-control mb-3" name="correo" placeholder="Correo" required value="{{ old('correo') }}" />
     @error('correo') <div class="text-danger">{{ $message }}</div> @enderror
     
-    <input type="password" class="form-control mb-3" name="contrasena" placeholder="Contraseña" required />
-    @error('contrasena') <div class="text-danger">{{ $message }}</div> @enderror
+    <input type="password" class="form-control mb-3" name="password" placeholder="Contraseña" required />
+    @error('password') <div class="text-danger">{{ $message }}</div> @enderror
     
-    <input type="password" class="form-control mb-3" name="contrasena_confirmation" placeholder="Confirmar Contraseña" required />
-    @error('contrasena_confirmation') <div class="text-danger">{{ $message }}</div> @enderror
+    <input type="password" class="form-control mb-3" name="password_confirmation" placeholder="Confirmar Contraseña" required />
+    @error('password_confirmation') <div class="text-danger">{{ $message }}</div> @enderror
     
     <input type="text" class="form-control mb-3" name="cuenta_bancaria" placeholder="Nº de cuenta (se necesita para reservar)" required value="{{ old('cuenta_bancaria') }}" />
     @error('cuenta_bancaria') <div class="text-danger">{{ $message }}</div> @enderror

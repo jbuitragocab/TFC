@@ -12,16 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('reservas', function (Blueprint $table) {
-            $table->id('id_reserva');
-            $table->unsignedBigInteger('usuario_id');
+            $table->id();
+
+            $table->unsignedBigInteger('usuario_id'); // <- usa el nombre correcto aquí
+            $table->foreign('usuario_id')->references('id_usuario')->on('users')->onDelete('cascade');
+        
             $table->unsignedBigInteger('restaurante_id');
-            $table->date('fecha');
+            $table->foreign('restaurante_id')->references('id_restaurante')->on('restaurantes')->onDelete('cascade');
+        
+            $table->dateTime('fecha');
             $table->integer('num_personas');
             $table->decimal('importe_reserva', 8, 2);
             $table->timestamps();
-
-            $table->foreign('usuario_id')->references('id_usuario')->on('usuarios')->onDelete('cascade');
-            $table->foreign('restaurante_id')->references('id_restaurante')->on('restaurantes')->onDelete('cascade');
         });
     }
 
