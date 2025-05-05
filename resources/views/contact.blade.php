@@ -1,3 +1,24 @@
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $nombre = $_POST['nombre'];
+    $telefono = $_POST['telefono'];
+    $problema = $_POST['problema'];
+
+    $destino = "javierbc2223@gmail.com"; 
+    $asunto = "Formulario de contacto de ReservaYa!";
+    $mensaje = "Nombre: $nombre\nTeléfono: $telefono\nProblema: $problema";
+
+    $headers = "From: no-reply@reservaya.com";
+
+    if (mail($destino, $asunto, $mensaje, $headers)) {
+        alert("Correo enviado correctamente.");
+    } else {
+        alert("Hubo un error al enviar el correo.") ;
+    }
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -189,12 +210,14 @@
         <div class="col-md-6 text-center text-md-start">
           <h4 class="fw-bold mb-2">¿Cuál es el problema?</h4>
           <p class="mb-4">Escríbenos contando qué ocurre.</p>
-          <form>
-            <input type="text" class="form-control" placeholder="Nombre" required />
-            <input type="text" class="form-control" placeholder="Teléfono de contacto" required />
-            <textarea class="form-control" rows="4" placeholder="Problema" required></textarea>
-            <button type="submit" class="btn btn-orange-form w-100 mt-3">ENVIAR FORMULARIO</button>
+          <form action="{{ route('contact.send') }}" method="POST"  id="contactForm">
+              @csrf
+              <input type="text" class="form-control" placeholder="Nombre" name="nombre" required />
+              <input type="text" class="form-control" placeholder="Correo / Teléfono de contacto" name="telefono" required />
+              <textarea class="form-control" rows="4" placeholder="Problema" name="problema" required></textarea>
+              <button  id="submitBtn" type="submit" class="btn btn-orange-form w-100 mt-3">ENVIAR FORMULARIO</button>
           </form>
+
         </div>
       </div>
     </div>
@@ -205,5 +228,22 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  
+  <script>
+    document.getElementById('contactForm').addEventListener('submit', function(event) {
+        var submitButton = document.getElementById('submitBtn');
+        
+        // Deshabilitar el botón y cambiar el texto
+        submitButton.disabled = true;
+        submitButton.innerHTML = "Enviando..."
+        event.preventDefault(); 
+        // para permitir el envío después de 2 segundos para evitar el clic
+        setTimeout(function() {
+            // Realizamos el envío del formulario una vez transcurrido el tiempo
+            document.getElementById('contactForm').submit();
+        }, 2000); // 2 segundos de espera
+    });
+</script>
 </body>
 </html>
