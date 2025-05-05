@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ReservaYa! - Inicio</title>
+  <title>Inicio - ReservaYa!</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body, html {
@@ -141,7 +141,9 @@
         <h1><span class="highlight">DISFRUTA</span></h1>
       </div>
       <div class="mt-4">
+      <a href="{{ route('index') }}">
         <button class="btn btn-orange">RESERVAR MESA AHORA</button>
+      </a>
       </div>
     </div>
 
