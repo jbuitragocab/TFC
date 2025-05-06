@@ -90,11 +90,9 @@
        font-size: 0.85rem;
        background-color: rgba(0, 0, 0, 0.8);
      }
- 
-   
- 
    </style>
  </head>
+
  <body>
    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
      <div class="container">
@@ -110,7 +108,7 @@
              <a class="nav-link" href="{{ route('index') }}">Inicio</a>
            </li>
            <li class="nav-item">
-             <a class="nav-link" href="#">Restaurantes</a>
+             <a class="nav-link" href="{{ route('restaurantes.index') }}">Restaurantes</a>
            </li>
            <li class="nav-item">
              <a class="nav-link" href="#">Reservas</a>
@@ -133,7 +131,7 @@
      <div class="container hero-content">
        <h1>EXPLORA <span class="highlight">SABORES</span> INCREÍBLES</h1>
        <p class="lead mt-3">Descubre y reserva en los mejores restaurantes de tu ciudad.</p>
-       <a href="{{ route('index') }}" class="btn btn-orange mt-4">Reservar Ahora</a>
+       <a href="{{ route('restaurantes.index') }}" class="btn btn-orange mt-4">Reservar Ahora</a>
      </div>
    </div>
  

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\RestauranteController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -20,3 +21,4 @@ Route::get('/home', function () {return view('welcome');})->middleware('auth')->
 Route::get('/logout', function () {auth()->logout();return redirect('/login');})->name('logout');
 Route::get('/contact', function () {return view('contact');})->middleware('auth')->name('contact');
 Route::post('contact', [ContactController::class, 'sendEmail'])->name('contact.send');
+Route::get('/restaurantes', [RestauranteController::class, 'index'])->name('restaurantes.index');

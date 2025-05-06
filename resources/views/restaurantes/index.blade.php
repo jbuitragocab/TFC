@@ -119,7 +119,7 @@
 <main class="main-content">
     <div class="container py-5">
         <div class="text-center mb-5">
-            <input type="text" class="form-control w-50 mx-auto buscador" placeholder="BUSCAR RESTAURANTE">
+            <input type="text" class="form-control w-50 mx-auto buscador" placeholder="BUSCAR RESTAURANTE" id="searchInput">
         </div>
 
         <h2 class="titulo-seccion mb-5">RESTAURANTES DISPONIBLES:</h2>
@@ -127,32 +127,34 @@
         <!-- Verifica si hay restaurantes -->
         @if ($restaurantes->count() > 0)
             @foreach ($restaurantes as $restaurante)
-            <div class="restaurante-card d-flex align-items-center mb-4">
-                <div class="me-4 text-center">
-                    <img src="{{ asset('images/' . strtolower(str_replace(' ', '', $restaurante->nombre)) . '.png') }}" alt="{{ $restaurante->nombre }}" class="restaurante-logo mb-2">
-                </div>
-                <div>
-                    <h4 class="mb-2">{{ $restaurante->nombre }}</h4>
-                    <p class="mb-2">{{ $restaurante->direccion }} | Tel: {{ $restaurante->telefono }}</p>
-                    <p class="mb-2">Horario: {{ $restaurante->horario }}</p>
-                    <a href="#" class="text-info" data-bs-toggle="modal" data-bs-target="#modalCarta{{ $restaurante->id }}">VER CARTA</a>
-                </div>
+            <div class="restaurante-wrapper">
+    <div class="restaurante-card d-flex align-items-center mb-4">
+        <div class="me-4 text-center">
+            <img src="{{ asset('images/' . strtolower(str_replace(' ', '', $restaurante->nombre)) . '.png') }}" alt="{{ $restaurante->nombre }}" class="restaurante-logo mb-2">
+        </div>
+        <div>
+            <h4 class="mb-2">{{ $restaurante->nombre }}</h4>
+            <p class="mb-2">{{ $restaurante->direccion }} | Tel: {{ $restaurante->telefono }}</p>
+            <p class="mb-2">Horario: {{ $restaurante->horario }}</p>
+            <a href="#" class="text-info" data-bs-toggle="modal" data-bs-target="#modalCarta{{ $restaurante->id_restaurante }}">VER CARTA</a>
+        </div>
+    </div>
 
-            </div>
-            <!-- Modal Carta -->
-            <div class="modal fade" id="modalCarta{{ $restaurante->id }}" tabindex="-1" aria-labelledby="modalCartaLabel{{ $restaurante->id }}" aria-hidden="true">
-                <div class="modal-dialog modal-lg modal-dialog-centered">
-                    <div class="modal-content bg-dark text-white">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="modalCartaLabel{{ $restaurante->id }}">Carta de {{ $restaurante->nombre }}</h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                        </div>
-                        <div class="modal-body">
-                            @forelse ($restaurante->menu as $plato)
-                            <p><strong>{{ $plato->nombre }}</strong> - {{ $plato->descripcion }} ({{ $plato->precio }} €)</p>
-                            @empty
-                            <p>No hay elementos en la carta aún.</p>
-                            @endforelse
+    <!-- Modal Carta -->
+                <div class="modal fade" id="modalCarta{{ $restaurante->id_restaurante }}" tabindex="-1" aria-labelledby="modalCartaLabel{{ $restaurante->id_restaurante }}" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content bg-dark text-white">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalCartaLabel{{ $restaurante->id_restaurante }}">Carta de {{ $restaurante->nombre }}</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                            </div>
+                            <div class="modal-body">
+                                @forelse ($restaurante->menu as $menu)
+                                    <p><strong>Nombre del menú: {{ $menu->nombre_menu }}</strong> <br> <strong>Plato:</strong> {{ $menu->nombre_plato }}<br> <strong>Descripción del plato:</strong> {{ $menu->descripcion_plato }}<br> <strong>Precio:</strong> ({{ $menu->precio }} €)</p>
+                                @empty
+                                    <p>No hay elementos en la carta aún.</p>
+                                @endforelse
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -164,10 +166,29 @@
     </div>
 </main>
 
+
 <footer>
     ReservaYa! - 2025. Todos los derechos reservados.
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('searchInput');
+
+        searchInput.addEventListener('input', function () {
+            const filter = searchInput.value.toLowerCase();
+            const wrappers = document.querySelectorAll('.restaurante-wrapper');
+
+            wrappers.forEach(function (wrapper) {
+                const nombre = wrapper.querySelector('h4')?.textContent.toLowerCase() || '';
+                wrapper.style.display = nombre.includes(filter) ? '' : 'none';
+            });
+        });
+    });
+</script>
+
+
 </body>
 </html>

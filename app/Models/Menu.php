@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 
 class Menu extends Model
 {
@@ -18,6 +20,6 @@ class Menu extends Model
 
     public function restaurante()
     {
-        return $this->belongsTo(Restaurante::class);
+        return $this->belongsTo(Restaurante::class, 'restaurante_id');
     }
 }
