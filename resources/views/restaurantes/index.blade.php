@@ -19,7 +19,6 @@
             flex-direction: column;
             min-height: 100vh;
         }
-
         .navbar {
             background-color: rgba(0, 0, 0, 0.8);
         }
@@ -83,12 +82,12 @@
         }
 
         footer {
-            text-align: center;
-            color: white;
-            padding: 15px;
-            font-size: 0.85rem;
-            background-color: rgba(0, 0, 0, 0.8);
-        }
+        text-align: center;
+        color: white;
+        padding: 15px;
+        font-size: 0.85rem;
+        background-color: rgba(0, 0, 0, 0.8);
+    }
     </style>
 </head>
 <body class="d-flex flex-column">
@@ -170,7 +169,7 @@
 <footer>
     ReservaYa! - 2025. Todos los derechos reservados.
 </footer>
-
+</body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
@@ -188,7 +187,4 @@
         });
     });
 </script>
-
-
-</body>
 </html>

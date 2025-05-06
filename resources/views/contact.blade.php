@@ -1,173 +1,249 @@
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $nombre = $_POST['nombre'];
+    $telefono = $_POST['telefono'];
+    $problema = $_POST['problema'];
+
+    $destino = "javierbc2223@gmail.com"; 
+    $asunto = "Formulario de contacto de ReservaYa!";
+    $mensaje = "Nombre: $nombre\nTeléfono: $telefono\nProblema: $problema";
+
+    $headers = "From: no-reply@reservaya.com";
+
+    if (mail($destino, $asunto, $mensaje, $headers)) {
+        alert("Correo enviado correctamente.");
+    } else {
+        alert("Hubo un error al enviar el correo.") ;
+    }
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Restaurantes - ReservaYa!</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contacto - ReservaYa!</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
 
-        body {
-            background: url('/img/res.jpg') no-repeat center center fixed;
-            background-size: cover;
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+    }
 
-        .navbar {
-            background-color: rgba(0, 0, 0, 0.8);
-        }
+    .navbar {
+      background-color: rgba(0, 0, 0, 0.8);
+    }
 
-        .navbar-brand img {
-            width: 90px;
-        }
+    .navbar-brand img {
+      width: 90px;
+    }
 
-        .nav-link {
-            color: white !important;
-            font-weight: bold;
-            font-style: italic;
-        }
+    .nav-link {
+      color: white !important;
+      font-weight: bold;
+      font-style: italic;
+    }
 
-        .nav-link:hover {
-            color: #ff6a00 !important;
-        }
+    .nav-link:hover {
+      color: #ff6a00 !important;
+    }
 
-        .btn-orange {
-            background-color: #ff6a00;
-            border: none;
-            color: white;
-            padding: 8px 20px;
-            font-weight: bold;
-            border-radius: 25px;
-            font-style: italic;
-        }
+    .btn-orange {
+      background-color: #ff6a00;
+      border: none;
+      color: white;
+      padding: 8px 20px;
+      font-weight: bold;
+      border-radius: 25px;
+      font-style: italic;
+    }
 
-        .btn-orange:hover {
-            background-color: #ffa600;
-            color: white;
-        }
+    .btn-orange:hover {
+      background-color: #ffa600;
+      color: white;
+    }
 
-        .restaurante-card {
-            background-color: rgba(0, 0, 0, 0.8);
-            border-radius: 25px;
-            color: white;
-            padding: 20px;
-            margin-bottom: 30px;
-        }
+    .contact-section {
+      background: url('/img/res.jpg') center center/cover no-repeat;
+      padding: 100px 0 60px;
+      position: relative;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 1; /* permite que crezca y empuje el footer hacia abajo */
+    }
 
-        .restaurante-logo {
-            width: 100px;
-            height: auto;
-        }
+    .contact-overlay {
+      background-color: rgba(0, 0, 0, 0.8);
+      padding: 40px;
+      border-radius: 10px;
+      max-width: 1100px;
+      width: 100%;
+    }
 
-        .titulo-seccion {
-            color: white;
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 30px;
-        }
+    .contact-info p,
+    .contact-info a {
+      margin: 0;
+      font-size: 0.95rem;
+    }
 
-        .buscador {
-            border-radius: 20px;
-            text-align: center;
-        }
-        .main-content {
-            flex-grow: 1;
-            padding-top: 120px; 
-        }
+    .contact-info strong {
+      display: block;
+      margin-bottom: 5px;
+    }
 
-        footer {
-            text-align: center;
-            color: white;
-            padding: 15px;
-            font-size: 0.85rem;
-            background-color: rgba(0, 0, 0, 0.8);
-        }
-    </style>
+    .contact-info .highlight {
+      color: #ff6a00;
+    }
+
+    .form-control {
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 15px;
+    }
+
+    .btn-orange-form {
+      background-color: #ff6a00;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      padding: 10px 30px;
+      font-weight: bold;
+    }
+
+    .btn-orange-form:hover {
+      background-color: #e55d00;
+    }
+
+    footer {
+      text-align: center;
+      color: white;
+      padding: 15px;
+      font-size: 0.85rem;
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    hr {
+      border-color: #555;
+    }
+
+    @media (max-width: 768px) {
+      .contact-overlay {
+        padding: 20px;
+      }
+
+      .contact-overlay .row {
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
-<body class="d-flex flex-column">
-
-<!-- Navbar fija -->
-<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+<body class="d-flex flex-column min-vh-100">
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
     <div class="container">
-        <a class="navbar-brand" href="#">
-            <img src="{{ asset('img/Logo.png') }}" alt="Logo ReservaYa!">
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item"><a class="nav-link" href="{{ route('index') }}">Inicio</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('restaurantes.index') }}">Restaurantes</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Reservas</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('contact') }}">Contacto</a></li>
-                <li class="nav-item"><a class="nav-link">{{ Auth::user()->correo }}</a></li>
-                <li class="nav-item"><a class="btn btn-orange" href="{{ route('logout') }}">Cerrar Sesión</a></li>
-            </ul>
-        </div>
+      <a class="navbar-brand" href="#">
+        <img src="{{ asset('img/Logo.png') }}" alt="Logo ReservaYa!">
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="{{ route('index') }}">Inicio</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ route('restaurantes.index') }}">Restaurantes</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Reservas</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ route('contact') }}">Contacto</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link">{{ Auth::user()->correo }}</a>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-orange" href="{{ route('logout') }}">Cerrar Sesión</a>
+          </li>
+        </ul>
+      </div>
     </div>
-</nav>
+  </nav>
 
-<!-- Contenido principal -->
-<main class="main-content">
-    <div class="container py-5">
-        <div class="text-center mb-5">
-            <input type="text" class="form-control w-50 mx-auto buscador" placeholder="BUSCAR RESTAURANTE">
+  <section class="contact-section">
+    <div class="contact-overlay">
+      <div class="row gx-5 gy-4 align-items-center">
+        <!-- Información de contacto -->
+        <div class="col-md-6 text-center text-md-start contact-info">
+          <p class="mb-2">¿Tienes algún problema con la app?</p>
+          <h4 class="fw-bold mb-3">Contáctanos</h4>
+          <p><strong>Horario</strong>Servicio 24h/365 días del año.</p>
+          <hr />
+          <p><strong>Dirección</strong>
+            Calle San Matín 123, SMV,<br>
+            CP: 12345, Madrid, España.
+          </p>
+          <hr>
+          <p><strong>Teléfono</strong> <span class="highlight">+34 635291923</span></p>
+          <hr>
+          <p><strong>Email</strong> <span class="highlight">reservaya@gmail.com</span></p>
+          <hr>
+          <p><strong>Redes sociales</strong>
+            <span class="highlight">@reservaya</span>
+          </p>
         </div>
 
-        <h2 class="titulo-seccion mb-5">RESTAURANTES DISPONIBLES:</h2>
+        <!-- Formulario -->
+        <div class="col-md-6 text-center text-md-start">
+          <h4 class="fw-bold mb-2">¿Cuál es el problema?</h4>
+          <p class="mb-4">Escríbenos contando qué ocurre.</p>
+          <form action="{{ route('contact.send') }}" method="POST"  id="contactForm">
+              @csrf
+              <input type="text" class="form-control" placeholder="Nombre" name="nombre" required />
+              <input type="text" class="form-control" placeholder="Correo / Teléfono de contacto" name="telefono" required />
+              <textarea class="form-control" rows="4" placeholder="Problema" name="problema" required></textarea>
+              <button  id="submitBtn" type="submit" class="btn btn-orange-form w-100 mt-3">ENVIAR FORMULARIO</button>
+          </form>
 
-        <!-- Verifica si hay restaurantes -->
-        @if ($restaurantes->count() > 0)
-            @foreach ($restaurantes as $restaurante)
-            <div class="restaurante-card d-flex align-items-center mb-4">
-                <div class="me-4 text-center">
-                    <img src="{{ asset('images/' . strtolower(str_replace(' ', '', $restaurante->nombre)) . '.png') }}" alt="{{ $restaurante->nombre }}" class="restaurante-logo mb-2">
-                </div>
-                <div>
-                    <h4 class="mb-2">{{ $restaurante->nombre }}</h4>
-                    <p class="mb-2">{{ $restaurante->direccion }} | Tel: {{ $restaurante->telefono }}</p>
-                    <p class="mb-2">Horario: {{ $restaurante->horario }}</p>
-                    <a href="#" class="text-info" data-bs-toggle="modal" data-bs-target="#modalCarta{{ $restaurante->id }}">VER CARTA</a>
-                </div>
-
-            </div>
-            <!-- Modal Carta -->
-            <div class="modal fade" id="modalCarta{{ $restaurante->id }}" tabindex="-1" aria-labelledby="modalCartaLabel{{ $restaurante->id }}" aria-hidden="true">
-                <div class="modal-dialog modal-lg modal-dialog-centered">
-                    <div class="modal-content bg-dark text-white">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="modalCartaLabel{{ $restaurante->id }}">Carta de {{ $restaurante->nombre }}</h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                        </div>
-                        <div class="modal-body">
-                            @forelse ($restaurante->menu as $plato)
-                            <p><strong>{{ $plato->nombre }}</strong> - {{ $plato->descripcion }} ({{ $plato->precio }} €)</p>
-                            @empty
-                            <p>No hay elementos en la carta aún.</p>
-                            @endforelse
-                        </div>
-                    </div>
-                </div>
-            </div>
-            @endforeach
-        @else
-            <p>No hay restaurantes disponibles en este momento.</p>
-        @endif
+        </div>
+      </div>
     </div>
-</main>
+  </section>
 
-<footer>
+  <footer>
     ReservaYa! - 2025. Todos los derechos reservados.
-</footer>
+  </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  
+  <script>
+    document.getElementById('contactForm').addEventListener('submit', function(event) {
+        var submitButton = document.getElementById('submitBtn');
+        
+        // Deshabilitar el botón y cambiar el texto
+        submitButton.disabled = true;
+        submitButton.innerHTML = "Enviando..."
+        event.preventDefault(); 
+        // para permitir el envío después de 2 segundos para evitar el clic
+        setTimeout(function() {
+            // Realizamos el envío del formulario una vez transcurrido el tiempo
+            document.getElementById('contactForm').submit();
+        }, 2000); // 2 segundos de espera
+    });
+</script>
 </body>
 </html>
