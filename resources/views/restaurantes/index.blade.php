@@ -137,7 +137,7 @@
             <div class="restaurante-wrapper">
                 <div class="restaurante-card d-flex align-items-center mb-2">
                     <div class="me-4 text-center">
-                        <img src="{{ asset('img/' . strtolower(str_replace(' ', '', $restaurante->nombre)) . '.png') }}" alt="{{ $restaurante->nombre }}" class="restaurante-logo mb-2">
+                        <img src="{{ asset('logos/' . strtolower(str_replace(' ', '', $restaurante->nombre)) . '.png') }}" alt="{{ $restaurante->nombre }}" class="restaurante-logo mb-2">
                         <br>
                         <a href=""class="btn btn-orange mt-2">Reservar</a>
                     </div>
