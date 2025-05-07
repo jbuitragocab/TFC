@@ -82,12 +82,13 @@
         }
 
         footer {
-        text-align: center;
-        color: white;
-        padding: 15px;
-        font-size: 0.85rem;
-        background-color: rgba(0, 0, 0, 0.8);
-    }
+            background-color: #323232;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-size: 0.85rem;
+        }
+
     </style>
 </head>
 <body class="d-flex flex-column">
@@ -140,7 +141,7 @@
     </div>
 
     <!-- Modal Carta -->
-                <div class="modal fade" id="modalCarta{{ $restaurante->id_restaurante }}" tabindex="-1" aria-labelledby="modalCartaLabel{{ $restaurante->id_restaurante }}" aria-hidden="true">
+    <div class="modal fade" id="modalCarta{{ $restaurante->id_restaurante }}" tabindex="-1" aria-labelledby="modalCartaLabel{{ $restaurante->id_restaurante }}" aria-hidden="true">
                     <div class="modal-dialog modal-lg modal-dialog-centered">
                         <div class="modal-content bg-dark text-white">
                             <div class="modal-header">
@@ -148,8 +149,21 @@
                                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                             </div>
                             <div class="modal-body">
-                                @forelse ($restaurante->menu as $menu)
-                                    <p><strong>Nombre del menú: {{ $menu->nombre_menu }}</strong> <br> <strong>Plato:</strong> {{ $menu->nombre_plato }}<br> <strong>Descripción del plato:</strong> {{ $menu->descripcion_plato }}<br> <strong>Precio:</strong> ({{ $menu->precio }} €)</p>
+                                @php
+                                    $menusAgrupados = $restaurante->menu->groupBy('nombre_menu');
+                                @endphp
+
+                                @forelse ($menusAgrupados as $nombreMenu => $platos)
+                                    <h5 class="text-warning mb-3">Menú de {{ $nombreMenu }}</h5>
+                                    <ul class="list-unstyled mb-4">
+                                        @foreach ($platos as $menu)
+                                            <li class="mb-2">
+                                                <strong>Plato:</strong> {{ $menu->nombre_plato }} ----
+                                                <strong>Descripción:</strong> {{ $menu->descripcion_plato }} ----
+                                                <strong>Precio:</strong> {{ number_format($menu->precio, 2) }} €
+                                            </li>
+                                        @endforeach
+                                    </ul>
                                 @empty
                                     <p>No hay elementos en la carta aún.</p>
                                 @endforelse
@@ -157,7 +171,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
             @endforeach
         @else
             <p>No hay restaurantes disponibles en este momento.</p>
