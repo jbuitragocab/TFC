@@ -231,19 +231,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
   
   <script>
-    document.getElementById('contactForm').addEventListener('submit', function(event) {
-        var submitButton = document.getElementById('submitBtn');
-        
-        // Deshabilitar el botón y cambiar el texto
-        submitButton.disabled = true;
-        submitButton.innerHTML = "Enviando..."
-        event.preventDefault(); 
-        // para permitir el envío después de 2 segundos para evitar el clic
-        setTimeout(function() {
-            // Realizamos el envío del formulario una vez transcurrido el tiempo
-            document.getElementById('contactForm').submit();
-        }, 2000); // 2 segundos de espera
-    });
+  document.getElementById('contactForm').addEventListener('submit', function(event) {
+    var submitButton = document.getElementById('submitBtn');
+
+    // Deshabilitar el botón y cambiar el texto
+    submitButton.disabled = true;
+    submitButton.innerHTML = "Enviando...";
+    event.preventDefault(); 
+
+    // Espero 2 segundos antes de enviar el formulario
+    setTimeout(function() {
+      alert("Formulario enviado correctamente.");
+      document.getElementById('contactForm').submit();
+    }, 2000);
+  });
 </script>
 </body>
 </html>
