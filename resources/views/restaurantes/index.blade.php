@@ -70,15 +70,22 @@
             font-weight: bold;
             text-align: center;
             margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 15px;
+            display: block;
+            margin: 0 auto;
         }
 
         .buscador {
             border-radius: 20px;
             text-align: center;
         }
+
         .main-content {
             flex-grow: 1;
-            padding-top: 120px; 
+            padding-top: 120px;
         }
 
         footer {
@@ -128,20 +135,22 @@
         @if ($restaurantes->count() > 0)
             @foreach ($restaurantes as $restaurante)
             <div class="restaurante-wrapper">
-    <div class="restaurante-card d-flex align-items-center mb-4">
-        <div class="me-4 text-center">
-            <img src="{{ asset('images/' . strtolower(str_replace(' ', '', $restaurante->nombre)) . '.png') }}" alt="{{ $restaurante->nombre }}" class="restaurante-logo mb-2">
-        </div>
-        <div>
-            <h4 class="mb-2">{{ $restaurante->nombre }}</h4>
-            <p class="mb-2">{{ $restaurante->direccion }} | Tel: {{ $restaurante->telefono }}</p>
-            <p class="mb-2">Horario: {{ $restaurante->horario }}</p>
-            <a href="#" class="text-info" data-bs-toggle="modal" data-bs-target="#modalCarta{{ $restaurante->id_restaurante }}">VER CARTA</a>
-        </div>
-    </div>
+                <div class="restaurante-card d-flex align-items-center mb-2">
+                    <div class="me-4 text-center">
+                        <img src="{{ asset('img/' . strtolower(str_replace(' ', '', $restaurante->nombre)) . '.png') }}" alt="{{ $restaurante->nombre }}" class="restaurante-logo mb-2">
+                        <br>
+                        <a href=""class="btn btn-orange mt-2">Reservar</a>
+                    </div>
+                    <div>
+                        <h4 class="mb-2">{{ $restaurante->nombre }}</h4>
+                        <p class="mb-2">{{ $restaurante->direccion }} | Tel: {{ $restaurante->telefono }}</p>
+                        <p class="mb-2">Horario: {{ $restaurante->horario }}</p>
+                        <a href="#" class="text-info" data-bs-toggle="modal" data-bs-target="#modalCarta{{ $restaurante->id_restaurante }}">VER CARTA</a>
+                    </div>
+                </div>
 
-    <!-- Modal Carta -->
-    <div class="modal fade" id="modalCarta{{ $restaurante->id_restaurante }}" tabindex="-1" aria-labelledby="modalCartaLabel{{ $restaurante->id_restaurante }}" aria-hidden="true">
+                <!-- Modal Carta -->
+                <div class="modal fade" id="modalCarta{{ $restaurante->id_restaurante }}" tabindex="-1" aria-labelledby="modalCartaLabel{{ $restaurante->id_restaurante }}" aria-hidden="true">
                     <div class="modal-dialog modal-lg modal-dialog-centered">
                         <div class="modal-content bg-dark text-white">
                             <div class="modal-header">
@@ -171,6 +180,7 @@
                         </div>
                     </div>
                 </div>
+            </div>
             @endforeach
         @else
             <p>No hay restaurantes disponibles en este momento.</p>
@@ -178,11 +188,9 @@
     </div>
 </main>
 
-
 <footer>
     ReservaYa! - 2025. Todos los derechos reservados.
 </footer>
-</body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
@@ -190,14 +198,16 @@
         const searchInput = document.getElementById('searchInput');
 
         searchInput.addEventListener('input', function () {
-            const filter = searchInput.value.toLowerCase();
+            const filter = searchInput.value.trim().toLowerCase(); // Elimina espacios y convierte a minúsculas
             const wrappers = document.querySelectorAll('.restaurante-wrapper');
 
             wrappers.forEach(function (wrapper) {
-                const nombre = wrapper.querySelector('h4')?.textContent.toLowerCase() || '';
+                const nombre = wrapper.querySelector('h4')?.textContent.trim().toLowerCase() || ''; // Normaliza el texto
                 wrapper.style.display = nombre.includes(filter) ? '' : 'none';
             });
         });
     });
 </script>
+
+</body>
 </html>
