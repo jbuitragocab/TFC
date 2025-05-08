@@ -23,9 +23,16 @@ class LoginController extends Controller
     
         if (Auth::attempt(['correo' => $credentials['correo'], 'password' => $credentials['password']])) {
             $request->session()->regenerate();
-            return redirect()->route('index'); // Redirigir a la página de inicio
+
+            $user = Auth::user();
+
+            if ($user->admin) {
+                return redirect()->route('admin.index');
+            }
+
+            return redirect()->route('index');
         }
-    
+
         return back()->withErrors([
             'correo' => 'Las credenciales no coinciden con nuestros registros.',
         ])->onlyInput('correo');
@@ -40,4 +47,10 @@ class LoginController extends Controller
 
         return redirect('/login');
     }
+
+    public function adminIndex()
+{
+    return view('admin.index');
 }
+}
+
