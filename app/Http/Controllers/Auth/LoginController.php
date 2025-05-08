@@ -20,7 +20,7 @@ class LoginController extends Controller
             'correo' => 'required|email',
             'password' => 'required|string|min:6',
         ]);
-    
+
         if (Auth::attempt(['correo' => $credentials['correo'], 'password' => $credentials['password']])) {
             $request->session()->regenerate();
 
@@ -53,4 +53,3 @@ class LoginController extends Controller
     return view('admin.index');
 }
 }
-
