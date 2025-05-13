@@ -29,4 +29,8 @@ class Restaurante extends Model
     {
         return $this->hasMany(Menu::class, 'restaurante_id', 'id_restaurante');
     }
+    public function mesa()
+    {
+        return $this->belongsTo(Mesa::class);
+    }
 }
