@@ -20,6 +20,6 @@ class Menu extends Model
 
     public function restaurante()
     {
-        return $this->belongsTo(Restaurante::class, 'restaurante_id');
+        return $this->belongsTo(Restaurante::class, 'restaurante_id',);
     }
 }

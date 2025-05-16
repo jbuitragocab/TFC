@@ -95,6 +95,7 @@
             padding: 15px;
             font-size: 0.85rem;
         }
+
     </style>
 </head>
 <body class="d-flex flex-column">
@@ -132,50 +133,49 @@
 
         <!-- Verifica si hay restaurantes -->
         @if ($restaurantes->count() > 0)
-           @foreach ($restaurantes as $restaurante)
-    <div class="restaurante-wrapper">
-        <!-- TARJETA DEL RESTAURANTE -->
-        <div class="restaurante-card d-flex align-items-center mb-2">
-            <div class="me-4 text-center">
-                <img src="{{ asset('logos/' . strtolower(str_replace(' ', '', $restaurante->nombre)) . '.png') }}" alt="{{ $restaurante->nombre }}" class="restaurante-logo mb-2">
-                <br>
-                <a href="#" class="btn btn-orange mt-2">Reservar</a>
-            </div>
-            <div>
-                <h4 class="mb-2">{{ $restaurante->nombre }}</h4>
-                <p class="mb-2">{{ $restaurante->direccion }} | Tel: {{ $restaurante->telefono }}</p>
-                <p class="mb-2">Horario: {{ $restaurante->horario }}</p>
-                <a href="#" class="text-info" data-bs-toggle="modal" data-bs-target="#modalCarta{{ $restaurante->id }}">VER CARTA</a>
-            </div>
-        </div>
-
-        <!-- MODAL DENTRO DEL MISMO FOREACH -->
-        <div class="modal fade" id="modalCarta{{ $restaurante->id }}" tabindex="-1" aria-labelledby="modalCartaLabel{{ $restaurante->id }}" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
-                <div class="modal-content bg-dark text-white">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalCartaLabel{{ $restaurante->id }}">Carta de {{ $restaurante->nombre }}</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            @foreach ($restaurantes as $restaurante)
+            <div class="restaurante-wrapper">
+                <div class="restaurante-card d-flex align-items-center mb-2">
+                    <div class="me-4 text-center">
+                        <img src="{{ asset('logos/' . strtolower(str_replace(' ', '', $restaurante->nombre)) . '.png') }}" alt="{{ $restaurante->nombre }}" class="restaurante-logo mb-2">
+                        <br>
+                        <a href=""class="btn btn-orange mt-2">Reservar</a>
                     </div>
-                    <div class="modal-body">
-                        @php
-                            $menusAgrupados = $restaurante->menu->groupBy('nombre_menu');
-                        @endphp
+                    <div>
+                        <h4 class="mb-2">{{ $restaurante->nombre }}</h4>
+                        <p class="mb-2">{{ $restaurante->direccion }} | Tel: {{ $restaurante->telefono }}</p>
+                        <p class="mb-2">Horario: {{ $restaurante->horario }}</p>
+                        <a href="#" class="text-info" data-bs-toggle="modal" data-bs-target="#modalCarta{{ $restaurante->id_restaurante }}">VER CARTA</a>
+                    </div>
+                </div>
 
-                        @forelse ($menusAgrupados as $nombreMenu => $platos)
-                            <h5 class="text-warning mb-3">Menú de {{ $nombreMenu }}</h5>
-                            <ul class="list-unstyled mb-4">
-                                @foreach ($platos as $menu)
-                                    <li class="mb-2">
-                                        <strong>Plato:</strong> {{ $menu->nombre_plato }} —
-                                        <strong>Descripción:</strong> {{ $menu->descripcion_plato }} —
-                                        <strong>Precio:</strong> {{ number_format($menu->precio, 2) }} €
-                                    </li>
-                                @endforeach
-                            </ul>
-                        @empty
-                            <p>No hay elementos en la carta aún.</p>
-                        @endforelse
+                <!-- Modal Carta -->
+                <div class="modal fade" id="modalCarta{{ $restaurante->id_restaurante }}" tabindex="-1" aria-labelledby="modalCartaLabel{{ $restaurante->id_restaurante }}" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content bg-dark text-white">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalCartaLabel{{ $restaurante->id_restaurante }}">Carta de {{ $restaurante->nombre }}</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                            </div>
+                            <div class="modal-body">
+                                @php
+                                    $menusAgrupados = $restaurante->menu->groupBy('nombre_menu');
+                                @endphp
+
+                                @forelse ($menusAgrupados as $nombreMenu => $platos)
+                                    <h5 class="text-warning mb-3">Menú de {{ $nombreMenu }}</h5>
+                                    <ul class="list-unstyled mb-4">
+                                        @foreach ($platos as $menu)
+                                            <li class="mb-2">
+                                                <strong>Plato:</strong> {{ $menu->nombre_plato }} ----
+                                                <strong>Descripción:</strong> {{ $menu->descripcion_plato }} ----
+                                                <strong>Precio:</strong> {{ number_format($menu->precio, 2) }} €
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @empty
+                                    <p>No hay elementos en la carta aún.</p>
+                                @endforelse
                             </div>
                         </div>
                     </div>
