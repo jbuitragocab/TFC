@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreign('restaurante_id')->references('id_restaurante')->on('restaurantes')->onDelete('cascade');
             $table->string('identificador')->nullable();
             $table->unsignedTinyInteger('capacidad');
+            $table->boolean('estado')->default(false);
 
             $table->timestamps();
         });
