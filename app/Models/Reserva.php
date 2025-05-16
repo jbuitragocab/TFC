@@ -26,9 +26,4 @@ class Reserva extends Model
     {
         return $this->belongsTo(Restaurante::class);
     }
-
-    public function mesa()
-    {
-    return $this->belongsTo(Mesa::class);
-    }
 }
