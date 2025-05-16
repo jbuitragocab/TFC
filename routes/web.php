@@ -24,3 +24,8 @@ Route::get('/contact', function () {return view('contact');})->middleware('auth'
 Route::post('contact', [ContactController::class, 'sendEmail'])->name('contact.send');
 Route::get('/restaurantes', [RestauranteController::class, 'index'])->name('restaurantes.index');
 Route::get('/admin', [LoginController::class, 'adminIndex'])->name('admin.index')->middleware('auth');
+
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin', [LoginController::class, 'adminIndex'])->name('admin.index');
+    // Otras rutas de admin...
+});
