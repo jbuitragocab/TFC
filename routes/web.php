@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\RestauranteController;
+use App\Http\Controllers\AdminController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -25,7 +26,7 @@ Route::post('contact', [ContactController::class, 'sendEmail'])->name('contact.s
 Route::get('/restaurantes', [RestauranteController::class, 'index'])->name('restaurantes.index');
 Route::get('/admin', [LoginController::class, 'adminIndex'])->name('admin.index')->middleware('auth');
 
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/admin', [LoginController::class, 'adminIndex'])->name('admin.index');
-    // Otras rutas de admin...
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/index', [AdminController::class, 'index'])->name('admin.index');
 });
