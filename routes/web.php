@@ -28,6 +28,7 @@ Route::get('/admin', [LoginController::class, 'adminIndex'])->name('admin.index'
 
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [AdminController::class, 'index']); // <-- aquí agregas esta línea
     Route::get('/index', [AdminController::class, 'index'])->name('index');
     Route::get('/create', [AdminController::class, 'create'])->name('create');
     Route::post('/', [AdminController::class, 'store'])->name('store');
