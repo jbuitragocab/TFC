@@ -29,4 +29,10 @@ Route::get('/admin', [LoginController::class, 'adminIndex'])->name('admin.index'
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/index', [AdminController::class, 'index'])->name('admin.index');
+    Route::get('/create', [AdminController::class, 'create'])->name('create');
+    Route::post('/', [AdminController::class, 'store'])->name('store');
+    Route::delete('/{restaurante}', [AdminController::class, 'destroy'])->name('destroy');
+    Route::get('/{restaurante}/edit', [AdminController::class, 'edit'])->name('admin.edit');
+    Route::put('/{restaurante}', [AdminController::class, 'update'])->name('admin.update');
+    Route::get('/{restaurante}', [AdminController::class, 'show'])->name('show');
 });

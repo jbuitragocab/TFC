@@ -26,7 +26,7 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h1>Administración de Restaurantes</h1>
-      <a href="" class="btn btn-success">
+      <a href="{{route ('admin.create')}}" class="btn btn-success">
         + Crear Restaurante
       </a>
     </div>
@@ -53,17 +53,20 @@
                 <td>{{ $restaurante->telefono }}</td>
                 <td>{{ $restaurante->horario }}</td>
                 <td>
-                  <a href=""
+                  <a href="{{ route('admin.show', ['restaurante' => $restaurante->id_restaurante]) }}"
                      class="btn btn-info btn-sm me-1">Ver</a>
-                  <a href=""
+                  <a href="{{ route('admin.edit', ['restaurante' => $restaurante->id_restaurante]) }}"
                      class="btn btn-warning btn-sm me-1">Editar</a>
-                  <form action=""
-                        method="POST" class="d-inline"
-                        onsubmit="return confirm('¿Eliminar restaurante?');">
-                    @csrf
-                    @method('DELETE')
-                    <button class="btn btn-danger btn-sm">Eliminar</button>
-                  </form>
+                 <form action="{{ route('admin.destroy', ['restaurante' => $restaurante->id_restaurante]) }}" 
+                      method="POST" 
+                      class="d-inline"
+                      onsubmit="return confirm('¿Estás seguro de que deseas eliminar este restaurante?');">
+                  @csrf
+                  @method('DELETE')
+                  <button type="submit" class="btn btn-danger btn-sm">
+                    Eliminar
+                  </button>
+                </form>
                 </td>
               </tr>
             @endforeach

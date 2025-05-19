@@ -8,6 +8,14 @@ class Restaurante extends Model
 {
     use HasFactory;
 
+    protected $table = 'restaurantes';
+
+    protected $primaryKey = 'id_restaurante';
+
+    public $incrementing = true;
+
+    protected $keyType = 'int';
+    
     protected $fillable = [
         'nombre',
         'direccion',
