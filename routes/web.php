@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\RestauranteController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ReservaController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -38,3 +39,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/{restaurante}', [AdminController::class, 'show'])->name('show');
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/restaurantes/{restaurante}/reservar', [ReservaController::class, 'showBookingForm'])->name('reservas.form');
+    Route::post('/reservas/check-availability', [ReservaController::class, 'checkAvailability'])->name('reservas.check_availability');
+    Route::post('/reservas', [ReservaController::class, 'store'])->name('reservas.store');
+    Route::get('/verreservas', [ReservaController::class, 'mostrarReservas'])->name('reservas.show');
+});

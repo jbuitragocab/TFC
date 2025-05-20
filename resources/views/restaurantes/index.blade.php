@@ -78,11 +78,6 @@
             margin: 0 auto;
         }
 
-        .buscador {
-            border-radius: 20px;
-            text-align: center;
-        }
-
         .main-content {
             flex-grow: 1;
             padding-top: 120px;
@@ -113,7 +108,7 @@
             <ul class="navbar-nav">
                 <li class="nav-item"><a class="nav-link" href="{{ route('index') }}">Inicio</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('restaurantes.index') }}">Restaurantes</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Reservas</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('reservas.show') }}">Reservas</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('contact') }}">Contacto</a></li>
                 <li class="nav-item"><a class="nav-link">{{ Auth::user()->correo }}</a></li>
                 <li class="nav-item"><a class="btn btn-orange" href="{{ route('logout') }}">Cerrar Sesión</a></li>
@@ -139,7 +134,7 @@
                     <div class="me-4 text-center">
                         <img src="{{ asset('logos/' . strtolower(str_replace(' ', '', $restaurante->nombre)) . '.png') }}" alt="{{ $restaurante->nombre }}" class="restaurante-logo mb-2">
                         <br>
-                        <a href=""class="btn btn-orange mt-2">Reservar</a>
+                        <a href="{{ route('reservas.form', $restaurante->id_restaurante) }}"class="btn btn-orange mt-2">Reservar</a>
                     </div>
                     <div>
                         <h4 class="mb-2">{{ $restaurante->nombre }}</h4>

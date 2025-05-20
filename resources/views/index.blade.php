@@ -111,7 +111,7 @@
              <a class="nav-link" href="{{ route('restaurantes.index') }}">Restaurantes</a>
            </li>
            <li class="nav-item">
-             <a class="nav-link" href="#">Reservas</a>
+             <a class="nav-link" href="{{ route('reservas.show') }}">Reservas</a>
            </li>
            <li class="nav-item">
              <a class="nav-link" href="{{ route('contact') }}">Contacto</a>
