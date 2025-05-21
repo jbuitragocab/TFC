@@ -88,6 +88,10 @@
             padding: 15px;
             font-size: 0.85rem;
             background-color: rgba(0, 0, 0, 0.8);
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            z-index: 10;
         }
 
         /* Estilos específicos para Mis Reservas */
@@ -105,19 +109,24 @@
         }
 
         ul.mis-reservas {
-            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
             padding: 0;
             margin: 0 auto;
-            max-width: 600px;
+            max-width: 100%;
         }
 
         li.mis-reservas {
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(26, 26, 26, 0.85);
             border-radius: 10px;
             padding: 20px;
-            margin-bottom: 15px;
             border: 1px solid #ffffff33;
-            text-align: left;
+            text-align: center;
+            font-weight: bold;
+            width: 600px;
+            list-style: none;
         }
 
         li.mis-reservas strong {
@@ -130,7 +139,6 @@
             font-weight: bold;
             text-align: center;
             margin-bottom: 30px;
-
             background-color: rgba(0, 0, 0, 0.5);
             padding: 10px;
             border-radius: 15px;
@@ -215,6 +223,7 @@
                     <li class="mis-reservas">
                         <strong>Número de reserva:</strong> {{ $reserva->id }}<br>
                         <strong>Restaurante:</strong> {{ $reserva->restaurante_id }}<br>
+                        <strong>Nombre del Restaurante:</strong> {{ $reserva->restaurante }}<br>
                         <strong>Mesa:</strong> {{ $reserva->mesa_id }}<br>
                         <strong>Fecha:</strong> {{ $reserva->fecha }}<br>
                         <strong>Hora:</strong> {{ $reserva->hora }}<br>

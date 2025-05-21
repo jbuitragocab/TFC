@@ -180,7 +180,8 @@ class ReservaController extends Controller
                           ->with('restaurante', 'mesa') // Eager load relationships
                           ->get();
 
-        return view('reservas.show', compact('reservas'));
+        // Devuelve la vista 'reservas.ver_reservas' y le pasa los datos de las reservas.
+        return view('reservas.show', compact('reservas')); // Cambiado a 'reservas.ver_reservas'
     }
 
     public function edit($id)
