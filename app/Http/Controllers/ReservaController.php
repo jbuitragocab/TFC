@@ -37,27 +37,31 @@ class ReservaController extends Controller
             'num_personas' => 'required|integer|min:1',
         ]);
 
-        $restaurante = Restaurante::findOrFail($request->restaurante_id);
+        $restaurante = Restaurante::with('mesas')->findOrFail($request->restaurante_id); // Cargar mesas con el restaurante
         $fechaReserva = Carbon::parse($request->fecha)->format('Y-m-d');
         $horaReserva = $request->hora;
         $numPersonas = $request->num_personas;
 
-        // 1. Obtener todas las mesas del restaurante
-        // Asegúrate de que las mesas se carguen con el restaurante.
-        $mesasDelRestaurante = $restaurante->mesas;
-
         // 2. Obtener las reservas existentes para la fecha y hora dadas en este restaurante
-        $horaInicioReserva = Carbon::parse($horaReserva)->subMinutes(120);
-        $horaFinReserva = Carbon::parse($horaReserva)->addHours(2);
+        // Considerar un rango de 2 horas para la ocupación de la mesa
+        $horaInicioReserva = Carbon::parse($horaReserva)->subMinutes(120); // 2 horas antes
+        $horaFinReserva = Carbon::parse($horaReserva)->addHours(2); // 2 horas después
 
         $reservasOcupadas = Reserva::where('restaurante_id', $restaurante->id_restaurante)
             ->where('fecha', $fechaReserva)
-            ->whereBetween('hora', [$horaInicioReserva->format('H:i:s'), $horaFinReserva->format('H:i:s')])
+            ->where(function ($query) use ($horaInicioReserva, $horaFinReserva) {
+                // Comprueba si la hora de la reserva existente se solapa con el rango de la nueva reserva
+                $query->whereBetween('hora', [$horaInicioReserva->format('H:i:s'), $horaFinReserva->format('H:i:s')])
+                      // O si el inicio de la nueva reserva cae dentro de una reserva existente
+                      ->orWhere(function ($query) use ($horaInicioReserva) {
+                          $query->whereRaw('? BETWEEN hora AND ADDTIME(hora, "02:00:00")', [$horaInicioReserva->format('H:i:s')]);
+                      });
+            })
             ->pluck('mesa_id');
 
         // 3. Filtrar las mesas disponibles
-        $mesasDisponibles = $mesasDelRestaurante->filter(function ($mesa) use ($reservasOcupadas, $numPersonas) {
-            // La mesa está disponible si no está en las reservas ocupadas y tiene suficiente capacidad.
+        $mesasDisponibles = $restaurante->mesas->filter(function ($mesa) use ($reservasOcupadas, $numPersonas) {
+            // La mesa está disponible si no está en las reservas ocupadas Y tiene suficiente capacidad.
             return !$reservasOcupadas->contains($mesa->id) && $mesa->capacidad >= $numPersonas;
         });
 
@@ -80,7 +84,7 @@ class ReservaController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
-      public function store(Request $request)
+    public function store(Request $request)
     {
         $request->validate([
             'restaurante_id' => 'required|exists:restaurantes,id_restaurante',
@@ -97,46 +101,70 @@ class ReservaController extends Controller
         $mesaId = $request->mesa_id;
 
         // Usamos una transacción para asegurar la atomicidad de la operación.
-        return \DB::transaction(function () use ($restauranteId, $mesaId, $fechaReserva, $horaReserva, $numPersonas, $request) {
-            // 1. Bloqueamos la mesa para evitar que otras reservas la tomen.
-            $mesa = Mesa::where('id', $mesaId)->lockForUpdate()->first();
+        try {
+            $reserva = \DB::transaction(function () use ($restauranteId, $mesaId, $fechaReserva, $horaReserva, $numPersonas, $request) {
+                // 1. Bloqueamos la mesa para evitar que otras reservas la tomen.
+                $mesa = Mesa::where('id', $mesaId)->lockForUpdate()->first();
 
-            // 2. Verificamos la disponibilidad dentro de la transacción.
-            $horaInicioReserva = $horaReserva->copy();
-            $horaFinReserva = $horaInicioReserva->copy()->addHours(2);
+                if (!$mesa) {
+                    throw new \Exception('La mesa seleccionada no es válida.');
+                }
 
-            $mesaOcupada = Reserva::where('restaurante_id', $restauranteId)
-                ->where('mesa_id', $mesaId)
-                ->where('fecha', $fechaReserva)
-                ->whereBetween('hora', [$horaInicioReserva->format('H:i:s'), $horaFinReserva->format('H:i:s')])
-                ->exists();
+                // 2. Verificamos la disponibilidad dentro de la transacción.
+                $horaInicioReserva = $horaReserva->copy();
+                $horaFinReserva = $horaInicioReserva->copy()->addHours(2);
 
-            if ($mesaOcupada) {
-                throw new \Exception('La mesa seleccionada ya no está disponible para esa fecha y hora. Por favor, elige otra.');
-            }
+                $mesaOcupada = Reserva::where('restaurante_id', $restauranteId)
+                    ->where('mesa_id', $mesaId)
+                    ->where('fecha', $fechaReserva)
+                    ->where(function ($query) use ($horaInicioReserva, $horaFinReserva) {
+                        $query->whereBetween('hora', [$horaInicioReserva->format('H:i:s'), $horaFinReserva->format('H:i:s')])
+                              ->orWhere(function ($query) use ($horaInicioReserva) {
+                                  $query->whereRaw('? BETWEEN hora AND ADDTIME(hora, "02:00:00")', [$horaInicioReserva->format('H:i:s')]);
+                              });
+                    })
+                    ->exists();
 
-            if ($mesa->capacidad < $numPersonas) {
-                throw new \Exception('La mesa seleccionada no tiene capacidad suficiente para el número de personas indicada.');
-            }
+                if ($mesaOcupada) {
+                    throw new \Exception('La mesa seleccionada ya no está disponible para esa fecha y hora. Por favor, elige otra.');
+                }
 
-            // 3. Si la mesa está disponible, creamos la reserva.
-            $reserva = Reserva::create([
-                'usuario_id' => Auth::id(),
-                'restaurante_id' => $restauranteId,
-                'mesa_id' => $mesaId,
-                'fecha' => $fechaReserva,
-                'hora' => $horaReserva->format('H:i:s'),
-                'num_personas' => $numPersonas,
-                'importe_reserva' => $request->importe_reserva ?? 0,
-                'estado' => 'confirmada',
-            ]);
+                if ($mesa->capacidad < $numPersonas) {
+                    throw new \Exception('La mesa seleccionada no tiene capacidad suficiente para el número de personas indicada.');
+                }
 
-            // No necesitamos confirmar la transacción; Laravel lo hace automáticamente al final del closure.
-            return $reserva; // Puedes devolver la reserva creada si lo necesitas
-        });
+                // 3. Si la mesa está disponible, creamos la reserva.
+                $reserva = Reserva::create([
+                    'usuario_id' => Auth::id(),
+                    'restaurante_id' => $restauranteId,
+                    'mesa_id' => $mesaId,
+                    'fecha' => $fechaReserva,
+                    'hora' => $horaReserva->format('H:i:s'),
+                    'num_personas' => $numPersonas,
+                    'importe_reserva' => $request->importe_reserva ?? 0,
+                    'estado' => 'confirmada',
+                ]);
 
-        // Si la transacción se completa con éxito, redirigimos.
-        return redirect()->route('reservas.success')->with('success', '¡Reserva realizada con éxito!');
+                return $reserva;
+            });
+
+            return redirect()->route('reservas.success', $reserva->id)->with('success', '¡Reserva realizada con éxito!');
+
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
+    /**
+     * Muestra los detalles de una reserva exitosa.
+     *
+     * @param  \App\Models\Reserva  $reserva
+     * @return \Illuminate\View\View
+     */
+    public function success(Reserva $reserva)
+    {
+        $reserva->load('restaurante', 'mesa');
+        return view('reservas.success', compact('reserva'));
     }
 
     /**
@@ -144,20 +172,59 @@ class ReservaController extends Controller
      *
      * @return \Illuminate\Contracts\View\View
      */
-      public function mostrarReservas(): \Illuminate\Contracts\View\View
+    public function mostrarReservas(): \Illuminate\Contracts\View\View
     {
-        // Obtiene todas las reservas del usuario que está autenticado.
-        $reservas = Reserva::where('usuario_id', Auth::id())->get();
+        // Obtiene todas las reservas del usuario que está autenticado,
+        // cargando de forma eficiente las relaciones 'restaurante' y 'mesa'.
+        $reservas = Reserva::where('usuario_id', Auth::id())
+                          ->with('restaurante', 'mesa') // Eager load relationships
+                          ->get();
 
-        // Carga las relaciones 'restaurante' y 'mesa' para cada reserva.
-        // Esto es crucial para acceder a los datos del restaurante y la mesa.
-        foreach ($reservas as $reserva) {
-            $reserva->load('restaurante', 'mesa');
-        }
-
-        // Devuelve la vista 'reservas.ver_reservas' y le pasa los datos de las reservas.
-        // Asegúrate de crear esta vista en resources/views/reservas/ver_reservas.blade.php
         return view('reservas.show', compact('reservas'));
     }
-}
 
+    public function edit($id)
+    {
+        $reserva = Reserva::with('restaurante', 'mesa')->findOrFail($id);
+        $restaurantes = \App\Models\Restaurante::all();
+        $mesas = \App\Models\Mesa::all();
+        return view('reservas.edit', compact('reserva', 'restaurantes', 'mesas'));
+    }
+
+    /**
+     * Actualiza una reserva en la base de datos.
+     */
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'restaurante_id' => 'required|exists:restaurantes,id_restaurante',
+            'mesa_id' => 'required|exists:mesas,id',
+            'fecha' => 'required|date|after_or_equal:today',
+            'hora' => 'required|date_format:H:i',
+            'num_personas' => 'required|integer|min:1',
+        ]);
+
+        $reserva = Reserva::findOrFail($id);
+        $reserva->update([
+            'restaurante_id' => $request->restaurante_id,
+            'mesa_id' => $request->mesa_id,
+            'fecha' => $request->fecha,
+            'hora' => $request->hora,
+            'num_personas' => $request->num_personas,
+            'importe_reserva' => $request->importe_reserva ?? 0,
+        ]);
+
+        return redirect()->route('reservas.show')->with('success', 'Reserva actualizada correctamente.');
+    }
+
+    /**
+     * Elimina una reserva.
+     */
+    public function destroy($id)
+    {
+        $reserva = Reserva::findOrFail($id);
+        $reserva->delete();
+
+        return redirect()->route('reservas.show')->with('success', 'Reserva eliminada correctamente.');
+    }
+}

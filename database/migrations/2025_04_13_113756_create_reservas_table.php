@@ -19,8 +19,8 @@ return new class extends Migration
             $table->foreign('restaurante_id')->references('id_restaurante')->on('restaurantes')->onDelete('cascade');
             $table->unsignedBigInteger('mesa_id')->nullable();
             $table->foreign('mesa_id')->references('id')->on('mesas')->onDelete('set null');
-            $table->dateTime('fecha');
-            $table->time('hora'); // Columna 'hora' definida en su posición correcta
+            $table->date('fecha');
+            $table->time('hora');
             $table->integer('num_personas');
             $table->decimal('importe_reserva', 8, 2);
             $table->timestamps();

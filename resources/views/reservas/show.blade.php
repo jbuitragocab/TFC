@@ -112,7 +112,7 @@
         }
 
         li.mis-reservas {
-            background-color: rgba(0, 0, 0, 0.5); /* Fondo negro y translúcido */
+            background-color: rgba(0, 0, 0, 0.5);
             border-radius: 10px;
             padding: 20px;
             margin-bottom: 15px;
@@ -124,11 +124,51 @@
             color: #ff6a00;
         }
 
+        
+        .titulo-seccion {
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 30px;
+
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 15px;
+            display: block;
+            margin: 0 auto;
+        }
+
         p.mis-reservas {
             font-size: 1.1rem;
             color: #ddd;
             margin-top: 20px;
         }
+
+        li.mis-reservas{
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .btn-edit, .btn-delete {
+            background-color: #ff6a00;
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            font-weight: bold;
+            border-radius: 20px;
+            font-style: italic;
+            margin-top: 10px;
+            display: inline-block; /* Para que estén en la misma línea */
+            margin-right: 10px; /* Espacio entre botones */
+            text-decoration: none; /* Quitar subrayado de enlaces */
+        }
+
+        .btn-edit:hover, .btn-delete:hover {
+            background-color: #e55d00;
+            color: white;
+        }
+
     </style>
 </head>
 <body class="mis-reservas d-flex flex-column">
@@ -168,20 +208,30 @@
     </nav>
 
     <div class="container mt-5 flex-grow-1">
-        <h1 class="mis-reservas">Mis Reservas</h1>
+        <h1 class="titulo-seccion mb-5">MIS RESERVAS</h1>
         @if ($reservas->count() > 0)
             <ul class="mis-reservas">
                 @foreach ($reservas as $reserva)
                     <li class="mis-reservas">
-                        <strong>ID Reserva:</strong> {{ $reserva->id }}<br>
-                        <strong>ID Restaurante:</strong> {{ $reserva->restaurante_id }}<br>
+                        <strong>Número de reserva:</strong> {{ $reserva->id }}<br>
+                        <strong>Restaurante:</strong> {{ $reserva->restaurante_id }}<br>
                         <strong>Mesa:</strong> {{ $reserva->mesa_id }}<br>
                         <strong>Fecha:</strong> {{ $reserva->fecha }}<br>
                         <strong>Hora:</strong> {{ $reserva->hora }}<br>
                         <strong>Número de Personas:</strong> {{ $reserva->num_personas }}<br>
                         <strong>Importe Reserva:</strong> {{ $reserva->importe_reserva }}
+                        
+                        <div class="mt-3">
+                            <a href="{{ route('reservas.edit', $reserva->id) }}" class="btn-edit">Editar</a>
+                            <form action="{{ route('reservas.destroy', $reserva->id) }}" method="POST" style="display:inline-block;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn-delete" onclick="return confirm('¿Estás seguro de que quieres eliminar esta reserva?');">Eliminar</button>
+                            </form>
+                        </div>
                         <br>
                     </li>
+                    
                 @endforeach
             </ul>
         @else

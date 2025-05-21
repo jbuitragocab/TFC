@@ -44,4 +44,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/reservas/check-availability', [ReservaController::class, 'checkAvailability'])->name('reservas.check_availability');
     Route::post('/reservas', [ReservaController::class, 'store'])->name('reservas.store');
     Route::get('/verreservas', [ReservaController::class, 'mostrarReservas'])->name('reservas.show');
+    Route::get('/reservas/{id}/edit', [ReservaController::class, 'edit'])->name('reservas.edit');
+    Route::put('/reservas/{id}', [ReservaController::class, 'update'])->name('reservas.update');
+    Route::delete('/reservas/{id}', [ReservaController::class, 'destroy'])->name('reservas.destroy');
 });
