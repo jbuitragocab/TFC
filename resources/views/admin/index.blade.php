@@ -17,6 +17,7 @@
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item"><a class="nav-link" href="{{ route('admin.index') }}">Restaurantes</a></li>
+          <li class="nav-item"><a class="nav-link" href="">Usuarios</a></li>
         </ul>
       </div>
     </div>
