@@ -26,7 +26,7 @@ class Reserva extends Model
     }
 
     public function restaurante()
-    {
+    {   
         return $this->belongsTo(Restaurante::class);
     }
 

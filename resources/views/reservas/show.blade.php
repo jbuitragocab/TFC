@@ -222,8 +222,7 @@
                 @foreach ($reservas as $reserva)
                     <li class="mis-reservas">
                         <strong>Número de reserva:</strong> {{ $reserva->id }}<br>
-                        <strong>Restaurante:</strong> {{ $reserva->restaurante_id }}<br>
-                        <strong>Nombre del Restaurante:</strong> {{ $reserva->restaurante }}<br>
+                        <strong>Nombre del Restaurante:</strong> {{ $reserva->restaurante->nombre }}<br>	
                         <strong>Mesa:</strong> {{ $reserva->mesa_id }}<br>
                         <strong>Fecha:</strong> {{ $reserva->fecha }}<br>
                         <strong>Hora:</strong> {{ $reserva->hora }}<br>

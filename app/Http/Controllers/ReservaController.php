@@ -179,7 +179,12 @@ class ReservaController extends Controller
         $reservas = Reserva::where('usuario_id', Auth::id())
                           ->with('restaurante', 'mesa') // Eager load relationships
                           ->get();
-
+        //Aqui pillo el nombre del restaurante para mostrarlo en la reserva
+        foreach($reservas as $r){
+            $r->restaurante = Restaurante::find($r->restaurante_id);
+        }
+       // var_dump($reservas);
+       // exit;
         // Devuelve la vista 'reservas.ver_reservas' y le pasa los datos de las reservas.
         return view('reservas.show', compact('reservas')); // Cambiado a 'reservas.ver_reservas'
     }
