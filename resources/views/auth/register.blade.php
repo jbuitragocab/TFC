@@ -106,9 +106,6 @@
     <input type="password" class="form-control mb-3" name="password_confirmation" placeholder="Confirmar Contraseña" required />
     @error('password_confirmation') <div class="text-danger">{{ $message }}</div> @enderror
     
-    <input type="text" class="form-control mb-3" name="cuenta_bancaria" placeholder="Nº de cuenta (se necesita para reservar)" required value="{{ old('cuenta_bancaria') }}" />
-    @error('cuenta_bancaria') <div class="text-danger">{{ $message }}</div> @enderror
-
     <button type="submit" class="btn btn-orange w-100">CONFIRMAR</button>
 </form>
 

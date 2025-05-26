@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('correo')->unique();
             $table->string('password');
             $table->date('fecha_registro');
-            $table->string('cuenta_bancaria')->nullable();
             $table->boolean('admin')->default(false);
             $table->timestamps();
         });

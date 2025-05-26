@@ -21,7 +21,6 @@ class RegisterController extends Controller
             'apellidos' => 'required|string|max:255',
             'correo' => 'required|string|email|max:255|unique:users,correo',
             'password' => 'required|string|min:6|confirmed',
-            'cuenta_bancaria' => 'required|string|max:20',
         ]);
     
         User::create([
@@ -30,7 +29,6 @@ class RegisterController extends Controller
             'correo' => $data['correo'],
             'password' => \Hash::make($data['password']),
             'fecha_registro' => now(),
-            'cuenta_bancaria' => $data['cuenta_bancaria'],
         ]);
     
         return redirect()->route('login')->with('success', 'Tu cuenta ha sido creada con éxito. ¡Inicia sesión!');
