@@ -7,6 +7,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\RestauranteController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ReservaController;
+use App\Http\Controllers\OpinionController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -47,4 +48,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/reservas/{id}/edit', [ReservaController::class, 'edit'])->name('reservas.edit');
     Route::put('/reservas/{id}', [ReservaController::class, 'update'])->name('reservas.update');
     Route::delete('/reservas/{id}', [ReservaController::class, 'destroy'])->name('reservas.destroy');
+    Route::get('/opiniones/crear/{restaurante}', [OpinionController::class, 'create'])->name('opiniones.create');
+    Route::post('/opiniones', [OpinionController::class, 'store'])->name('opiniones.store');
 });

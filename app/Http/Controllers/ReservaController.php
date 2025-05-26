@@ -9,6 +9,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon; // Para trabajar con fechas y horas fácilmente
 use Illuminate\View\View;
+use Illuminate\Http\JsonResponse;
+use App\Models\Opinion; // Asegúrate de importar el modelo Opinion
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ReservaController extends Controller
 {
@@ -198,6 +201,12 @@ class ReservaController extends Controller
     foreach($reservas as $r){
         $r->restaurante = Restaurante::find($r->restaurante_id);
     }
+
+      foreach ($reservas as $reserva) {
+            $reserva->has_opinion_for_restaurant = Opinion::where('usuario_id', Auth::id())
+                                                          ->where('restaurante_id', $reserva->restaurante_id)
+                                                          ->exists();
+        }
 
     // Devuelve la vista 'reservas.ver_reservas' y le pasa los datos de las reservas.
     // Asegúrate de que el nombre de la vista es correcto ('reservas.show' o 'reservas.ver_reservas')

@@ -216,36 +216,52 @@
     </nav>
 
     <div class="container mt-5 flex-grow-1">
-        <h1 class="titulo-seccion mb-5">MIS RESERVAS</h1>
-        @if ($reservas->count() > 0)
-            <ul class="mis-reservas">
-                @foreach ($reservas as $reserva)
-                    <li class="mis-reservas">
-                        <strong>Número de reserva:</strong> {{ $reserva->id }}<br>
-                        <strong>Nombre del Restaurante:</strong> {{ $reserva->restaurante->nombre }}<br>	
-                        <strong>Mesa:</strong> {{ $reserva->mesa_id }}<br>
-                        <strong>Fecha:</strong> {{ $reserva->fecha }}<br>
-                        <strong>Hora:</strong> {{ $reserva->hora }}<br>
-                        <strong>Número de Personas:</strong> {{ $reserva->num_personas }}<br>
-                        <strong>Importe Reserva:</strong> {{ $reserva->importe_reserva }}
-                        
-                        <div class="mt-3">
+    <h1 class="titulo-seccion mb-5">MIS RESERVAS</h1>
+    @if ($reservas->count() > 0)
+        <ul class="mis-reservas">
+            @foreach ($reservas as $reserva)
+                <li class="mis-reservas">
+                    <strong>Número de reserva:</strong> {{ $reserva->id }}<br>
+                    <strong>Nombre del Restaurante:</strong> {{ $reserva->restaurante->nombre }}<br>
+                    <strong>Mesa:</strong> {{ $reserva->mesa_id }}<br>
+                    <strong>Fecha:</strong> {{ $reserva->fecha }}<br>
+                    <strong>Hora:</strong> {{ $reserva->hora }}<br>
+                    <strong>Número de Personas:</strong> {{ $reserva->num_personas }}<br>
+                    <strong>Importe Reserva:</strong> {{ $reserva->importe_reserva }}€
+
+                    <div class="mt-3">
+                        @php
+                            // Convertimos la fecha y hora de la reserva a un objeto Carbon para comparaciones
+                            $reservaDateTime = Carbon\Carbon::parse($reserva->fecha . ' ' . $reserva->hora);
+                            $now = Carbon\Carbon::now();
+                        @endphp
+
+                        {{-- Botones de edición y eliminación: solo para reservas futuras o del día actual que no han pasado --}}
+                        @if ($reservaDateTime->isFuture() || ($reservaDateTime->isSameDay($now) && $reservaDateTime->greaterThanOrEqualTo($now)))
                             <a href="{{ route('reservas.edit', $reserva->id) }}" class="btn-edit">Editar</a>
                             <form action="{{ route('reservas.destroy', $reserva->id) }}" method="POST" style="display:inline-block;">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn-delete" onclick="return confirm('¿Estás seguro de que quieres eliminar esta reserva?');">Eliminar</button>
                             </form>
-                        </div>
-                        <br>
-                    </li>
-                    
-                @endforeach
-            </ul>
-        @else
-            <p class="mis-reservas">No tienes reservas realizadas.</p>
-        @endif
-    </div>
+                        @endif
+
+                        {{-- Botón para dejar opinión: solo si la reserva ya pasó y no se ha dejado una opinión --}}           
+                            <a href="{{ route('opiniones.create', $reserva->restaurante->id_restaurante) }}" class="btn-orange">Dejar Opinión</a>
+                        @if ($reservaDateTime->isPast() && $reserva->has_opinion_for_restaurant)
+                            {{-- Mensaje si ya se dejó una opinión para una reserva pasada --}}
+                            <p class="text-white-50 mt-2" style="font-style: italic; font-size: 0.9em;">Ya has dejado una opinión para este restaurante.</p>
+                        @endif
+                    </div>
+                    <br>
+                </li>
+
+            @endforeach
+        </ul>
+    @else
+        <p class="mis-reservas">No tienes reservas realizadas.</p>
+    @endif
+</div>
 
     <footer class="bg-dark text-white text-center py-3">
         ReservaYa! - 2025. Todos los derechos reservados.
