@@ -34,6 +34,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/index', [AdminController::class, 'index'])->name('index');
     Route::get('/create', [AdminController::class, 'create'])->name('create');
     Route::post('/', [AdminController::class, 'store'])->name('store');
+    Route::get('/reservas', [AdminController::class, 'mostrarTodasLasReservas'])->name('reservas');
+    Route::get('/reservas/{id}/edit', [App\Http\Controllers\AdminController::class, 'editReserva'])->name('editareservas');
+    Route::put('/reservas/{id}', [App\Http\Controllers\AdminController::class, 'updateReserva'])->name('reservas.update');
+    Route::delete('/reservas/{id}', [App\Http\Controllers\AdminController::class, 'destroyReserva'])->name('reservas.destroy');
     Route::delete('/{restaurante}', [AdminController::class, 'destroy'])->name('destroy');
     Route::get('/{restaurante}/edit', [AdminController::class, 'edit'])->name('edit');
     Route::put('/{restaurante}', [AdminController::class, 'update'])->name('update');
