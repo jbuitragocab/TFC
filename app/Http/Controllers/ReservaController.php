@@ -172,22 +172,37 @@ class ReservaController extends Controller
      *
      * @return \Illuminate\Contracts\View\View
      */
-    public function mostrarReservas(): \Illuminate\Contracts\View\View
-    {
-        // Obtiene todas las reservas del usuario que está autenticado,
-        // cargando de forma eficiente las relaciones 'restaurante' y 'mesa'.
-        $reservas = Reserva::where('usuario_id', Auth::id())
-                          ->with('restaurante', 'mesa') // Eager load relationships
-                          ->get();
-        //Aqui pillo el nombre del restaurante para mostrarlo en la reserva
-        foreach($reservas as $r){
-            $r->restaurante = Restaurante::find($r->restaurante_id);
-        }
-       // var_dump($reservas);
-       // exit;
-        // Devuelve la vista 'reservas.ver_reservas' y le pasa los datos de las reservas.
-        return view('reservas.show', compact('reservas')); // Cambiado a 'reservas.ver_reservas'
+   public function mostrarReservas(): \Illuminate\Contracts\View\View
+{
+    // Obtiene la fecha y hora actuales
+    $now = Carbon::now(); // <-- Esta línea es la que faltaba justo aquí.
+
+    // Obtiene todas las reservas del usuario que está autenticado,
+    // cargando de forma eficiente las relaciones 'restaurante' y 'mesa'.
+    $reservas = Reserva::where('usuario_id', Auth::id())
+                        ->with('restaurante', 'mesa') // Eager load relationships
+                        ->where(function ($query) use ($now) { // Aquí ya está bien el 'use ($now)'
+                            $query->where('fecha', '>', $now->format('Y-m-d')) // Reservas en fechas futuras
+                                ->orWhere(function ($query) use ($now) {
+                                    $query->where('fecha', '=', $now->format('Y-m-d')) // O reservas en la fecha actual
+                                          ->where('hora', '>=', $now->format('H:i:s')); // Y la hora es igual o posterior a la actual
+                                });
+                        })
+                        ->orderBy('fecha', 'asc') // Opcional: Ordenar por fecha y hora para una mejor visualización
+                        ->orderBy('hora', 'asc')
+                        ->get();
+
+    //Aqui pillo el nombre del restaurante para mostrarlo en la reserva
+    // Nota: La carga del restaurante ya se hace con `->with('restaurante')` arriba,
+    // esta parte podría ser redundante si ya accedes a $reserva->restaurante->nombre directamente en la vista.
+    foreach($reservas as $r){
+        $r->restaurante = Restaurante::find($r->restaurante_id);
     }
+
+    // Devuelve la vista 'reservas.ver_reservas' y le pasa los datos de las reservas.
+    // Asegúrate de que el nombre de la vista es correcto ('reservas.show' o 'reservas.ver_reservas')
+    return view('reservas.show', compact('reservas')); // Asumiendo que la vista es ver_reservas
+}
 
     public function edit($id)
     {
