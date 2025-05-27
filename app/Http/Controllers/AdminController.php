@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Restaurante;
 use App\Models\Reserva;
 use App\Models\User;
+use App\Models\Mesa;
+use Carbon\Carbon;
 
 
 class AdminController extends Controller
@@ -91,28 +93,43 @@ class AdminController extends Controller
 
     public function editReserva($id)
 {
-    $reserva = \App\Models\Reserva::findOrFail($id);
-    $restaurantes = \App\Models\Restaurante::all();
-    $usuarios = \App\Models\User::all();
-    // Si tienes modelo Mesa:
-    $mesas = \App\Models\Mesa::all();
-    return view('admin.editareservas', compact('reserva', 'restaurantes', 'usuarios', 'mesas'));
+    $reserva = Reserva::with('restaurante', 'mesa', 'usuario')->findOrFail($id); // Cargar relaciones necesarias
+        $restaurantes = Restaurante::all();
+        $mesas = Mesa::all(); 
+         $reserva->hora = Carbon::parse($reserva->hora)->format('H:i');
+        return view('admin.editareservas', compact('reserva', 'restaurantes', 'mesas'));
 }
 
 public function updateReserva(Request $request, $id)
 {
-    $request->validate([
-        'restaurante_id' => 'required|exists:restaurantes,id_restaurante',
-        'usuario_id' => 'required|exists:users,id_usuario',
-        'mesa_id' => 'required|exists:mesas,id',
-        'fecha' => 'required|date',
-        'hora' => 'required',
-        'num_personas' => 'required|integer|min:1',
-        'importe_reserva' => 'nullable|numeric'
-    ]);
+     $request->validate([
+            'restaurante_id' => 'required|exists:restaurantes,id_restaurante',
+            'mesa_id' => 'required|exists:mesas,id',
+            'fecha' => 'required|date|after_or_equal:today', // La fecha no puede ser anterior a hoy
+            'hora' => 'required|date_format:H:i',
+            'num_personas' => 'required|integer|min:1',
+            'importe_reserva' => 'nullable|numeric'
+        ]);
 
-    $reserva = \App\Models\Reserva::findOrFail($id);
-    $reserva->update($request->all());
+        $reserva = Reserva::findOrFail($id);
+        $mesa = Mesa::findOrFail($request->mesa_id); // Obtener la mesa seleccionada
+
+        // Validar si el número de personas excede la capacidad de la mesa
+        if ($request->num_personas > $mesa->capacidad) {
+            return back()->withInput()->with('error', 'El número de personas excede la capacidad de la mesa seleccionada (Capacidad: ' . $mesa->capacidad . ').');
+        }
+
+        // Actualizar la reserva
+        $reserva->update([
+            'restaurante_id' => $request->restaurante_id,
+            'mesa_id' => $request->mesa_id,
+            'fecha' => $request->fecha,
+            'hora' => $request->hora,
+            'num_personas' => $request->num_personas,
+            'importe_reserva' => $request->importe_reserva ?? 0,
+            // Si el usuario_id se envía como hidden, también se puede actualizar aquí si es necesario
+            // 'usuario_id' => $request->usuario_id,
+        ]);
 
     return redirect()->route('admin.reservas')->with('success', 'Reserva actualizada correctamente.');
 }
