@@ -29,7 +29,8 @@ class User extends Authenticatable
         'password',
         'fecha_registro',
         'cuenta_bancaria',
-        'admin'
+        'admin',
+        'restaurante_id',
     ];
 
     /**
@@ -63,5 +64,10 @@ class User extends Authenticatable
     public function opiniones()
     {
         return $this->hasMany(Opinion::class);
+    }
+
+    public function restaurante()
+    {
+        return $this->belongsTo(Restaurante::class, 'restaurante_id', 'id_restaurante');
     }
 }

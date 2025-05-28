@@ -42,4 +42,9 @@ class Restaurante extends Model
     {
         return $this->hasMany(Mesa::class, 'restaurante_id', 'id_restaurante');
     }
+
+    public function users()
+    {
+        return $this->hasMany(User::class, 'restaurante_id', 'id_restaurante');
+    }
 }
