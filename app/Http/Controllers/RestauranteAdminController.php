@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Restaurante;
 use App\Models\User;
+use App\Models\Mesa;
 
 class RestauranteAdminController extends Controller
 {
@@ -21,7 +22,7 @@ class RestauranteAdminController extends Controller
 
         if ($user->restaurante_id === null) {
             // Si no tiene un restaurante asignado, redirigimos o mostramos un error.
-            return redirect()->route('home')->with('error', 'No estás asociado a ningún restaurante.');
+            return redirect()->route('index')->with('error', 'No estás asociado a ningún restaurante.');
         }
 
         // Cargamos la información del restaurante usando la relación definida en el modelo User
@@ -91,6 +92,12 @@ class RestauranteAdminController extends Controller
         $restaurante->save();
 
         return redirect()->route('admin_restaurante.index')->with('success', 'Información del restaurante actualizada correctamente.');
+    }
+
+       public function destroyMesa(Mesa $mesa)
+    {
+        $mesa->delete();
+        return redirect()->back()->with('success', 'Mesa eliminada correctamente.');
     }
 
     /*

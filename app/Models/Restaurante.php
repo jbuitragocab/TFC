@@ -25,7 +25,7 @@ class Restaurante extends Model
 
     public function reservas()
     {
-        return $this->hasMany(Reserva::class);
+        return $this->hasMany(Reserva::class,'restaurante_id');
     }
 
     public function opiniones()

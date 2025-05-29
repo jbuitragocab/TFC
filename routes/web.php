@@ -64,5 +64,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 Route::middleware(['auth'])->group(function () {
     Route::prefix('admin-restaurante')->name('admin_restaurante.')->group(function () {
         Route::get('/', [RestauranteAdminController::class, 'index'])->name('index');
+        Route::get('/edit', [RestauranteAdminController::class, 'edit'])->name('edit');
+        Route::put('/update', [RestauranteAdminController::class, 'update'])->name('update');
+        Route::delete('/{mesa}', [RestauranteAdminController::class, 'destroyMesa'])->name('destroyMesa');
+
+
     });
 });
