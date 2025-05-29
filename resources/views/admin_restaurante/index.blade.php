@@ -116,7 +116,6 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{-- Aquí iría un bucle foreach para mostrar los menús del restaurante --}}
                                     {{-- @foreach ($restaurante->menus as $menu) --}}
                                     <tr>
                                         <td>Menú del Día</td>
@@ -205,7 +204,7 @@
                                 <tbody>
                                     @foreach ($restaurante->reservas as $reserva)
                                     <tr>
-                                        <td>{{ $reserva->mesa_id }}</td>
+                                        <td>{{ $reserva->mesa->identificador }}</td>
                                         <td>{{ $reserva->fecha }}</td>
                                         <td>{{ $reserva->hora }}</td>
                                         <td>{{ $reserva->num_personas }}</td>
