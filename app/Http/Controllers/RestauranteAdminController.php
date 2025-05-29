@@ -100,16 +100,81 @@ class RestauranteAdminController extends Controller
         return redirect()->back()->with('success', 'Mesa eliminada correctamente.');
     }
 
-    /*
-    public function showMenus()
+    public function editMesa(Mesa $mesa)
+        {
+            $user = Auth::user();
+            if ($user->restaurante_id === null) {
+                return redirect()->route('home')->with('error', 'Acceso denegado.');
+            }
+            $restaurante = $user->restaurante;
+            return view('admin_restaurante.editMesa', compact('mesa', 'restaurante'));
+        }
+    
+    public function updateMesa(Request $request, Mesa $mesa)
     {
         $user = Auth::user();
         if ($user->restaurante_id === null) {
             return redirect()->route('home')->with('error', 'Acceso denegado.');
         }
-        $restaurante = $user->restaurante;
-        $menus = $restaurante->menus; // Asumiendo que tienes una relación hasMany en Restaurante para 'menus'
-        return view('admin_restaurante.menus', compact('menus', 'restaurante'));
+
+        $request->validate([
+            'capacidad' => 'required|integer|min:1',
+        ]);
+
+        $mesa->capacidad = $request->capacidad;
+
+        $mesa->save();
+
+        return redirect()->route('admin_restaurante.index')->with('success', 'Mesa actualizada correctamente.');
     }
-    */
+
+    
+public function createMesa()
+{
+    $user = Auth::user();
+    if ($user->restaurante_id === null) {
+        return redirect()->route('home')->with('error', 'Acceso denegado.');
+    }
+
+    $restaurante = $user->restaurante;
+
+    return view('admin_restaurante.createMesa', compact('restaurante'));
+}
+
+
+public function storeMesa(Request $request)
+{
+    $user = Auth::user();
+    if ($user->restaurante_id === null) {
+        return redirect()->route('home')->with('error', 'Acceso denegado.');
+    }
+
+    $request->validate([
+        'capacidad' => 'required|integer|min:1',
+    ]);
+
+    // Buscar el último identificador numérico usado (por restaurante si quieres)
+    $lastMesa = Mesa::where('restaurante_id', $user->restaurante_id)
+                    ->orderByDesc('identificador')
+                    ->first();
+
+    // Calcular el siguiente identificador, suponiendo que es un número en string
+    if ($lastMesa && is_numeric($lastMesa->identificador)) {
+        $nextIdentificador = (int)$lastMesa->identificador + 1;
+    } else {
+        $nextIdentificador = 1;
+    }
+
+    $mesa = new Mesa();
+    $mesa->capacidad = $request->capacidad;
+    $mesa->restaurante_id = $user->restaurante_id;
+    $mesa->identificador = (string)$nextIdentificador;  // convertir a string
+
+    $mesa->save();
+
+    return redirect()->route('admin_restaurante.index')->with('success', 'Mesa creada correctamente.');
+}
+
+
+
 }

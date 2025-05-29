@@ -8,7 +8,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
     <style>
-        .nav-link{
+        .nav-link {
+            color: #fff;
+        }
+
+        .nav-item{
             color: #fff;
         }
     </style>
@@ -26,14 +30,6 @@
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item active">
                         <a class="nav-link" href="#"><i class="fas fa-tachometer-alt"></i> Inicio <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
-                        </a>
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                            @csrf
-                        </form>
                     </li>
                 </ul>
             </div>
@@ -158,7 +154,7 @@
 
                     <div class="tab-pane fade" id="mesas" role="tabpanel" aria-labelledby="mesas-tab">
                         <h5 class="card-title">Gestión de Mesas</h5>
-                        <a href="#" class="btn btn-success btn-sm mb-3"><i class="fas fa-plus-circle"></i> Añadir Nueva Mesa</a>
+                        <a href="{{ route('admin_restaurante.createMesa')}}" class="btn btn-success btn-sm mb-3"><i class="fas fa-plus-circle"></i> Añadir Nueva Mesa</a>
                         <div class="table-responsive">
                             <table class="table table-hover table-striped">
                                 <thead class="thead-light">
@@ -174,7 +170,7 @@
                                         <td>{{ $mesa->identificador }}</td>
                                         <td>{{ $mesa->capacidad }} personas</td>
                                         <td class="text-center">
-                                            <a href="#" class="btn btn-sm btn-warning" title="Editar"><i class="fas fa-edit"></i></a>
+                                            <a href="{{ route('admin_restaurante.editMesa', $mesa->id) }}" class="btn btn-sm btn-warning" title="Editar"><i class="fas fa-edit"></i></a>
                                             <form action="{{ route('admin_restaurante.destroyMesa', $mesa->id) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')

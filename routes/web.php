@@ -63,11 +63,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 //PAGINA ADMIN RESTAURANTE
 Route::middleware(['auth'])->group(function () {
     Route::prefix('admin-restaurante')->name('admin_restaurante.')->group(function () {
+        // Coloca las rutas más específicas antes
+        Route::get('/crear-mesa', [RestauranteAdminController::class, 'createMesa'])->name('createMesa');
+        Route::post('/guardar-mesa', [RestauranteAdminController::class, 'storeMesa'])->name('storeMesa');
+
+        // Luego las rutas más genéricas
         Route::get('/', [RestauranteAdminController::class, 'index'])->name('index');
         Route::get('/edit', [RestauranteAdminController::class, 'edit'])->name('edit');
         Route::put('/update', [RestauranteAdminController::class, 'update'])->name('update');
         Route::delete('/{mesa}', [RestauranteAdminController::class, 'destroyMesa'])->name('destroyMesa');
-
-
+        Route::get('/{mesa}', [RestauranteAdminController::class, 'editMesa'])->name('editMesa');
+        Route::put('/{mesa}', [RestauranteAdminController::class, 'updateMesa'])->name('updateMesa');
     });
 });
