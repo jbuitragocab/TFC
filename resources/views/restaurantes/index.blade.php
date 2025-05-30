@@ -162,8 +162,7 @@
                                     <ul class="list-unstyled mb-4">
                                         @foreach ($platos as $menu)
                                             <li class="mb-2">
-                                                <strong>Plato:</strong> {{ $menu->nombre_plato }} ----
-                                                <strong>Descripción:</strong> {{ $menu->descripcion_plato }} ----
+                                                <strong>Descripción:</strong> {{ $menu->descripcion_menu }} ----
                                                 <strong>Precio:</strong> {{ number_format($menu->precio, 2) }} €
                                             </li>
                                         @endforeach

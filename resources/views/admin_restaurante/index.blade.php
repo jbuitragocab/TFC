@@ -103,49 +103,41 @@
                 <div class="tab-content" id="adminTabsContent">
                     <div class="tab-pane " id="menus" role="tabpanel" aria-labelledby="menus-tab">
                         <h5 class="card-title">Gestión de Menús</h5>
-                        <a href="#" class="btn btn-success btn-sm mb-3"><i class="fas fa-plus-circle"></i> Añadir Nuevo Menú</a>
+                        <a href="{{ route('admin_restaurante.createMenu') }}" class="btn btn-success btn-sm mb-3"><i class="fas fa-plus-circle"></i> Añadir Nuevo Menú</a>
                         <div class="table-responsive">
                             <table class="table table-hover table-striped">
                                 <thead class="thead-light">
                                     <tr>
                                         <th>Nombre del Menú</th>
-                                        <th>Tipo de Plato</th>
                                         <th>Descripción</th>
                                         <th>Precio</th>
                                         <th class="text-center">Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{-- @foreach ($restaurante->menus as $menu) --}}
-                                    <tr>
-                                        <td>Menú del Día</td>
-                                        <td>Principal</td>
-                                        <td>Plato combinado con opciones vegetarianas.</td>
-                                        <td>12.50 €</td>
-                                        <td class="text-center">
-                                            <a href="#" class="btn btn-sm btn-info" title="Ver"><i class="fas fa-eye"></i></a>
-                                            <a href="#" class="btn btn-sm btn-warning" title="Editar"><i class="fas fa-edit"></i></a>
-                                            <button class="btn btn-sm btn-danger" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Menú Infantil</td>
-                                        <td>Secundario</td>
-                                        <td>Mini hamburguesa con patatas y bebida.</td>
-                                        <td>7.00 €</td>
-                                        <td class="text-center">
-                                            <a href="#" class="btn btn-sm btn-info" title="Ver"><i class="fas fa-eye"></i></a>
-                                            <a href="#" class="btn btn-sm btn-warning" title="Editar"><i class="fas fa-edit"></i></a>
-                                            <button class="btn btn-sm btn-danger" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
-                                        </td>
-                                    </tr>
-                                    {{-- @endforeach --}}
-                                    {{-- Si no hay menús --}}
-                                    {{-- @if ($restaurante->menus->isEmpty())
+
+                                    @if ($restaurante->menus && $restaurante->menus)
+
+                                        @foreach ($restaurante->menus as $menu)
+                                            <tr>
+                                                <td>{{ $menu->nombre_menu }}</td>
+                                                <td>{{ $menu->descripcion_menu }}</td>
+                                                <td>{{ number_format($menu->precio, 2) }} €</td>
+                                                <td class="text-center">
+                                                    <a href="{{ route('admin_restaurante.editMenu', $menu->id_menu) }}" class="btn btn-sm btn-warning" title="Editar"><i class="fas fa-edit"></i></a>
+                                                    <form action="{{ route('admin_restaurante.destroyMenu', $menu->id_menu) }}" method="POST" class="d-inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button class="btn btn-sm btn-danger" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @else
                                         <tr>
                                             <td colspan="5" class="text-center">No hay menús registrados para este restaurante.</td>
                                         </tr>
-                                    @endif --}}
+                                    @endif
                                 </tbody>
                             </table>
                         </div>

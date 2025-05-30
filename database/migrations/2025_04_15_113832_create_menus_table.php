@@ -15,8 +15,7 @@ return new class extends Migration
             $table->id('id_menu');
             $table->unsignedBigInteger('restaurante_id');
             $table->string('nombre_menu');
-            $table->string('nombre_plato');
-            $table->text('descripcion_plato');
+            $table->text('descripcion_menu');
             $table->decimal('precio', 8, 2);
             $table->timestamps();
 

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Restaurante;
 use App\Models\User;
 use App\Models\Mesa;
+use App\Models\Menu;
 
 class RestauranteAdminController extends Controller
 {
@@ -175,6 +176,84 @@ public function storeMesa(Request $request)
     return redirect()->route('admin_restaurante.index')->with('success', 'Mesa creada correctamente.');
 }
 
+public function createMenu()
+{
+    $user = Auth::user();
 
+    if (!$user->restaurante) {
+        return redirect()->route('home')->with('error', 'Acceso denegado.');
+    }
+
+    return view('admin_restaurante.createMenu', ['restaurante' => $user->restaurante]);
+}
+
+public function storeMenu(Request $request)
+{
+    $user = Auth::user();
+
+    $request->validate([
+        'nombre_menu' => 'required|string|max:255',
+        'descripcion_menu' => 'nullable|string',
+        'precio' => 'required|numeric|min:0',
+    ]);
+
+    Menu::create([
+        'restaurante_id' => $user->restaurante_id,
+        'nombre_menu' => $request->nombre_menu,
+        'descripcion_menu' => $request->descripcion_menu,
+        'precio' => $request->precio,
+    ]);
+
+    return redirect()->route('admin_restaurante.index')->with('success', 'Menú creado correctamente.');
+}
+
+public function editMenu(Menu $menu)
+{
+    $user = Auth::user();
+
+    if ($menu->restaurante_id !== $user->restaurante_id) {
+        return redirect()->route('admin_restaurante.index')->with('error', 'Acceso denegado.');
+    }
+
+    return view('admin_restaurante.editMenu', compact('menu'));
+}
+
+public function updateMenu(Request $request, Menu $menu)
+{
+    $user = Auth::user();
+
+    if ($menu->restaurante_id !== $user->restaurante_id) {
+        return redirect()->route('admin_restaurante.index')->with('error', 'Acceso denegado.');
+    }
+
+    $request->validate([
+        'nombre_menu' => 'required|string|max:255',
+        'descripcion_menu' => 'nullable|string',
+        'precio' => 'required|numeric|min:0',
+    ]);
+
+    $menu->update([
+        'nombre_menu' => $request->nombre_menu,
+        'descripcion_menu' => $request->descripcion_menu,
+        'precio' => $request->precio,
+    ]);
+
+    return redirect()->route('admin_restaurante.index')->with('success', 'Menú actualizado correctamente.');
+}
+
+
+public function destroyMenu(Menu $menu)
+{
+    $user = Auth::user();
+
+    // Verificar que el menú pertenece al restaurante del usuario
+    if ($menu->restaurante_id !== $user->restaurante_id) {
+        return redirect()->route('admin_restaurante.index')->with('error', 'Acceso denegado.');
+    }
+
+    $menu->delete();
+
+    return redirect()->route('admin_restaurante.index')->with('success', 'Menú eliminado correctamente.');
+}
 
 }
