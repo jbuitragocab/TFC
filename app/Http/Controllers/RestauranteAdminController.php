@@ -80,7 +80,6 @@ class RestauranteAdminController extends Controller
             'direccion' => 'required|string|max:255',
             'telefono' => 'nullable|string|max:20',
             'horario' => 'nullable|string|max:255',
-            // Añade aquí más reglas de validación para otros campos
         ]);
 
         // Actualizar los datos del restaurante
@@ -88,7 +87,6 @@ class RestauranteAdminController extends Controller
         $restaurante->direccion = $request->direccion;
         $restaurante->telefono = $request->telefono;
         $restaurante->horario = $request->horario;
-        // Actualiza otros campos si los tienes
 
         $restaurante->save();
 
@@ -154,7 +152,7 @@ public function storeMesa(Request $request)
         'capacidad' => 'required|integer|min:1',
     ]);
 
-    // Buscar el último identificador numérico usado (por restaurante si quieres)
+    // Buscar el último identificador numérico usado 
     $lastMesa = Mesa::where('restaurante_id', $user->restaurante_id)
                     ->orderByDesc('identificador')
                     ->first();
@@ -169,7 +167,7 @@ public function storeMesa(Request $request)
     $mesa = new Mesa();
     $mesa->capacidad = $request->capacidad;
     $mesa->restaurante_id = $user->restaurante_id;
-    $mesa->identificador = (string)$nextIdentificador;  // convertir a string
+    $mesa->identificador = (string)$nextIdentificador;
 
     $mesa->save();
 

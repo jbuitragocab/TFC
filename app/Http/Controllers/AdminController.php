@@ -76,7 +76,7 @@ class AdminController extends Controller
 
     public function mostrarTodasLasReservas()
     {
-        $reservas = \App\Models\Reserva::all(); // Asegúrate de tener el modelo Reserva
+        $reservas = \App\Models\Reserva::all();
 
       foreach($reservas as $r){
         $r->restaurante = Restaurante::find($r->restaurante_id);

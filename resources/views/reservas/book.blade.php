@@ -207,7 +207,6 @@
                             mesasHtml += '<button type="submit" class="btn btn-primary mt-3">Confirmar Reserva</button>';
                             mesasHtml += '</form>';
                             $('#mesas-disponibles-container').html(mesasHtml);
-                            // Attach the form submission handler *here*, inside the availability check
                             $('#mesas-disponibles-container form').on('submit', function(e) {
                                 e.preventDefault();
                                 let reservationData = $(this).serialize();
@@ -218,7 +217,6 @@
                                     type: 'POST',
                                     data: reservationData,
                                     success: function(reservationResponse) {
-                                        // Redirect to the user's reservations page
                                         window.location.href = "{{ route('reservas.show') }}";
                                     },
                                     error: function(xhr) {

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon; // Para trabajar con fechas y horas fácilmente
 use Illuminate\View\View;
 use Illuminate\Http\JsonResponse;
-use App\Models\Opinion; // Asegúrate de importar el modelo Opinion
+use App\Models\Opinion;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ReservaController extends Controller
@@ -45,8 +45,7 @@ class ReservaController extends Controller
         $horaReserva = $request->hora;
         $numPersonas = $request->num_personas;
 
-        // 2. Obtener las reservas existentes para la fecha y hora dadas en este restaurante
-        // Considerar un rango de 2 horas para la ocupación de la mesa
+        // Pongo un rango de 2 horas para la ocupación de la mesa
         $horaInicioReserva = Carbon::parse($horaReserva)->subMinutes(120); // 2 horas antes
         $horaFinReserva = Carbon::parse($horaReserva)->addHours(2); // 2 horas después
 
@@ -62,7 +61,7 @@ class ReservaController extends Controller
             })
             ->pluck('mesa_id');
 
-        // 3. Filtrar las mesas disponibles
+        //Filtrar las mesas disponibles
         $mesasDisponibles = $restaurante->mesas->filter(function ($mesa) use ($reservasOcupadas, $numPersonas) {
             // La mesa está disponible si no está en las reservas ocupadas Y tiene suficiente capacidad.
             return !$reservasOcupadas->contains($mesa->id) && $mesa->capacidad >= $numPersonas;
@@ -82,7 +81,7 @@ class ReservaController extends Controller
     }
 
     /**
-     * Crea una nueva reserva.
+     * Crear una nueva reserva.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse
@@ -103,7 +102,6 @@ class ReservaController extends Controller
         $restauranteId = $request->restaurante_id;
         $mesaId = $request->mesa_id;
 
-        // Usamos una transacción para asegurar la atomicidad de la operación.
         try {
             $reserva = \DB::transaction(function () use ($restauranteId, $mesaId, $fechaReserva, $horaReserva, $numPersonas, $request) {
                 // 1. Bloqueamos la mesa para evitar que otras reservas la tomen.
@@ -178,20 +176,20 @@ class ReservaController extends Controller
    public function mostrarReservas(): \Illuminate\Contracts\View\View
 {
     // Obtiene la fecha y hora actuales
-    $now = Carbon::now(); // <-- Esta línea es la que faltaba justo aquí.
+    $now = Carbon::now();
 
     // Obtiene todas las reservas del usuario que está autenticado,
     // cargando de forma eficiente las relaciones 'restaurante' y 'mesa'.
     $reservas = Reserva::where('usuario_id', Auth::id())
-                        ->with('restaurante', 'mesa') // Eager load relationships
-                        ->where(function ($query) use ($now) { // Aquí ya está bien el 'use ($now)'
+                        ->with('restaurante', 'mesa')
+                        ->where(function ($query) use ($now) {
                             $query->where('fecha', '>', $now->format('Y-m-d')) // Reservas en fechas futuras
                                 ->orWhere(function ($query) use ($now) {
                                     $query->where('fecha', '=', $now->format('Y-m-d')) // O reservas en la fecha actual
                                           ->where('hora', '>=', $now->format('H:i:s')); // Y la hora es igual o posterior a la actual
                                 });
                         })
-                        ->orderBy('fecha', 'asc') // Opcional: Ordenar por fecha y hora para una mejor visualización
+                        ->orderBy('fecha', 'asc')
                         ->orderBy('hora', 'asc')
                         ->get();
 
@@ -208,9 +206,8 @@ class ReservaController extends Controller
                                                           ->exists();
         }
 
-    // Devuelve la vista 'reservas.ver_reservas' y le pasa los datos de las reservas.
-    // Asegúrate de que el nombre de la vista es correcto ('reservas.show' o 'reservas.ver_reservas')
-    return view('reservas.show', compact('reservas')); // Asumiendo que la vista es ver_reservas
+    // Devuelve la vista 'reservas.show' y le pasa los datos de las reservas.
+    return view('reservas.show', compact('reservas'));
 }
 
     public function edit($id)

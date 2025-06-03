@@ -8,7 +8,7 @@ use App\Models\Reserva;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon; // Para trabajar con fechas y horas fácilmente
-use Illuminate\Routing\Controller; // Asegúrate de importar el controlador base
+use Illuminate\Routing\Controller;
 use Illuminate\Http\RedirectResponse; // Para manejar redirecciones
 use Illuminate\View\View; // Para manejar vistas
 
@@ -16,7 +16,6 @@ use Illuminate\View\View; // Para manejar vistas
 class OpinionController extends Controller
 {
     /**
-     * Muestra el formulario para que un usuario deje una opinión sobre un restaurante.
      *
      * @param  \App\Models\Restaurante  $restaurante
      * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
@@ -31,14 +30,10 @@ class OpinionController extends Controller
         if ($existingOpinion) {
             return redirect()->route('reservas.show')->with('info', 'Ya has dejado una opinión para este restaurante.');
         }
-
-        // Pasar el objeto restaurante a la vista para mostrar su nombre y el ID
         return view('opiniones.create', compact('restaurante'));
     }
 
     /**
-     * Almacena una nueva opinión en la base de datos.
-     *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -47,7 +42,7 @@ class OpinionController extends Controller
         // Validar los datos del formulario
         $request->validate([
             'restaurante_id' => 'required|exists:restaurantes,id_restaurante',
-            'comentario' => 'nullable|string|max:1000', // El comentario puede ser opcional
+            'comentario' => 'nullable|string|max:1000',
             'calificacion' => 'required|integer|min:1|max:5', // Calificación de 1 a 5
         ]);
 
@@ -60,7 +55,6 @@ class OpinionController extends Controller
             return back()->with('error', 'Ya has dejado una opinión para este restaurante.');
         }
 
-        // Crear la nueva opinión
         Opinion::create([
             'usuario_id' => Auth::id(),
             'restaurante_id' => $request->restaurante_id,
