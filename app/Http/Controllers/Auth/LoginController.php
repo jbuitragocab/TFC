@@ -14,7 +14,7 @@ class LoginController extends Controller
         return view('auth.login');
     }
 
-    public function login(Request $request)
+       public function login(Request $request)
     {
         $credentials = $request->validate([
             'correo' => 'required|email',
@@ -25,6 +25,10 @@ class LoginController extends Controller
             $request->session()->regenerate();
 
             $user = Auth::user();
+
+            if ($user->restaurante_id !== null) {
+                return redirect()->route('admin_restaurante.index');
+            }
 
             if ($user->admin) {
                 return redirect()->route('admin.index');

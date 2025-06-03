@@ -63,9 +63,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 //PAGINA ADMIN RESTAURANTE
 Route::middleware(['auth'])->group(function () {
     Route::prefix('admin-restaurante')->name('admin_restaurante.')->group(function () {
+        Route::get('/', [RestauranteAdminController::class, 'index'])->name('index');
         Route::get('/crear-mesa', [RestauranteAdminController::class, 'createMesa'])->name('createMesa');
         Route::post('/guardar-mesa', [RestauranteAdminController::class, 'storeMesa'])->name('storeMesa');
-        Route::get('/', [RestauranteAdminController::class, 'index'])->name('index');
         Route::get('/edit', [RestauranteAdminController::class, 'edit'])->name('edit');
         Route::put('/update', [RestauranteAdminController::class, 'update'])->name('update');
         Route::delete('/{mesa}', [RestauranteAdminController::class, 'destroyMesa'])->name('destroyMesa');
@@ -73,7 +73,7 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/{mesa}', [RestauranteAdminController::class, 'updateMesa'])->name('updateMesa');
         Route::get('/menus/crear', [RestauranteAdminController::class, 'createMenu'])->name('createMenu');
         Route::post('/menus', [RestauranteAdminController::class, 'storeMenu'])->name('storeMenu');
-    Route::get('/menus/{menu}/editar', [RestauranteAdminController::class, 'editMenu'])->name('editMenu');
+        Route::get('/menus/{menu}/editar', [RestauranteAdminController::class, 'editMenu'])->name('editMenu');
         Route::put('/menus/{menu}', [RestauranteAdminController::class, 'updateMenu'])->name('updateMenu');
         Route::delete('/menus/{menu}', [RestauranteAdminController::class, 'destroyMenu'])->name('destroyMenu');
     });
